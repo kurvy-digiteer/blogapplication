@@ -7,3 +7,7 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+5.times do|x|
+    Post.create(title: "Title #{x}", body: "Body #{x} The quick brown fox jumps over the lazy dog" )
+end
