@@ -1,5 +1,6 @@
-<p style="color: green"><%= notice %></p>
 
+
+<div class ="container">
 <%= render @post %>
 
 <div>
@@ -8,3 +9,18 @@
 
   <%= button_to "Destroy this post", @post, method: :delete %>
 </div>
+</div>
+
+<div class = "container">
+  <%= render "comments/form", 
+  post: @post, 
+  comment:  @post.comments.build,
+  submit_label: "Reply" %>
+  <% @comments.each do |comment|%>
+    <%= render "comments/comment", 
+    post: @post, 
+    comment: comment %>
+  <% end %>
+</div>
+
+
