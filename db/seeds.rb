@@ -16,8 +16,14 @@
 
  User.create(email: "kurvy@example.com",
     name: "Kurvy Morales",
-   password: "password",
+    password: "password",
     password_confirmation: "password")
+
+User.create(email: "testcase@example.com",
+    name: "John Doe",
+    password: "password",
+    password_confirmation: "password",
+    role: User::ROLE_ADMIN)
 
 5.times do |x|
     Post.create(title: "Title #{x}",
