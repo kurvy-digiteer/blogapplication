@@ -1,8 +1,20 @@
+<div class="container">
+  <h1>Personal Home Page</h1>
 
-<div class ="container">
+  <% if current_user %>
+    <% if current_user.user? %>
+        <p>Hello <%= current_user.name %> </p>
+        <p>You are a [<%= current_user.role_name %>] </p>
+    <% end %>
 
-    <h1>Personal Home Page</h1>
-    <p>Read more about me! Or check the rest of the site</p>
-    <%= link_to "About me", about_path, class:"btn btn-primary" %>
-    <%= link_to "Blog/Posts", posts_path, class:"btn btn-primary"%>
+    <% if current_user.admin? %>
+      There are <%= User.count %> users in the website.
+    <% end %>
+  <% else %>
+    <p>Welcome, guest! Please <%= link_to "sign in", new_user_session_path %> or <%= link_to "sign up", new_user_registration_path %>.</p>
+  <% end %>
+
+  <p>Read more about me! Or check the rest of the site</p>
+  <%= link_to "About me", about_path, class:"btn btn-primary" %>
+  <%= link_to "Blog/Posts", posts_path, class:"btn btn-primary"%>
 </div>
