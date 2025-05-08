@@ -15,8 +15,11 @@
                 controller: "comments",
                 action: "comments#toggleForm",
                 comments_form_param: "edit-form-#{comment.id}",
-                comments_body_param: "comment-body-#{comment.id}"
-            } %>
+                comments_body_param: "comment-body-#{comment.id}",
+                comments_edit_param: "edit-button-#{comment.id}"
+            },
+            id: "edit-button-#{comment.id}" %>
+
             <%= button_to "Delete", [post, comment], class: "btn btn-danger", method: :delete %>
         </div>
 
@@ -26,10 +29,14 @@
             comment: comment,
             submit_label: "Update" %>
         </div>
-
     <% end %>
+
     <hr />
     <div id ="comment-body-<%= comment.id %>">
         <%= comment.body %>
     </div>
+
+    <% if comment.image.attached? %>
+        <%= image_tag comment.image, style: "max-width: 300px; max-height: 300px;" %>
+    <% end %>
 </div>

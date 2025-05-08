@@ -1,16 +1,26 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+ # This file should ensure the existence of records required to run the application in every environment (production,
+ # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
+ # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
+ #
+ # Example:
+ #
+ #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
+ #     MovieGenre.find_or_create_by!(name: genre_name)
+ #   end
 
-User.create(email: "admin@example.com", name:"Admin", password: "password", password_confirmation: "password")
-User.create(email: "johndoe@example.com", name:"John Doe", password: "password", password_confirmation: "password")
+ # User.create(email: "admin@example.com",
+ #    name: "Admin",
+ #    password: "password",
+ #    password_confirmation: "password",
+ #    role: "admin")
 
-5.times do|x|
-    Post.create(title: "Title #{x}", body: "Body #{x} The quick brown fox jumps over the lazy dog", user_id: User.first.id )
+ User.create(email: "kurvy@example.com",
+    name: "Kurvy Morales",
+   password: "password",
+    password_confirmation: "password")
+
+5.times do |x|
+    Post.create(title: "Title #{x}",
+        body: "Body #{x} The quick brown fox jumps over the lazy dog",
+        user_id: User.first.id)
 end
