@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   authenticated :user, ->(user) { user.admin? } do
-    # Admin authentication routes
+    # Admin authentication routes WIP
     devise_scope :user do
       get "admin/login", to: "admin/sessions#new", as: :admin_login
       post "admin/login", to: "admin/sessions#create"
@@ -12,13 +12,14 @@ Rails.application.routes.draw do
     get "admin/posts"
     get "admin/comments"
     get "admin/users"
-    get "admin/show_post"
+    get "admin/show_post/:id", to: "admin#show_post", as: :admin_post
+    delete "admin/destroy_post/:id", to: "admin#destroy_post", as: :admin_destroy_post
   end
 
   get "search", to: "search#index"
   get "users/profile"
 
-  # Custom Devise routes
+  # Custom Devise routes for user login, signup, edit, and delete specifically
   devise_scope :user do
     get "login", to: "users/sessions#new", as: :user_login
     post "login", to: "users/sessions#create"
@@ -31,6 +32,7 @@ Rails.application.routes.draw do
     delete "", to: "users/registrations#destroy", as: :delete_user
   end
 
+  # Default devise routes as said by devise documentation, do not remove just in case
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
