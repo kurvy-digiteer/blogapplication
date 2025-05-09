@@ -8,7 +8,9 @@
     <% end %>
 
     <% if current_user.admin? %>
-      There are <%= User.count %> users in the website.
+      <p>Hello <%= current_user.name %> </p>
+      <p>You are an [<%= current_user.role_name %>] </p>
+      There are <%= pluralize(User.count, "user") %> in the website.
     <% end %>
   <% else %>
     <p>Welcome, guest! Please <%= link_to "sign in", new_user_session_path %> or <%= link_to "sign up", new_user_registration_path %>.</p>
