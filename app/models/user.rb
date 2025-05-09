@@ -28,7 +28,6 @@ class User < ApplicationRecord
     end
   end
 
-
   # Ransackable attributes for search, allows what can be explicitly searched for
   def self.ransackable_attributes(auth_object = nil)
     [ "created_at", "email", "id", "name", "remember_created_at", "updated_at", "views" ]

@@ -6,7 +6,13 @@ class Post < ApplicationRecord
     has_many :comments, dependent: :destroy
 
     has_rich_text :body
+    # For ransack search
+    has_one :content, class_name: "ActionText::RichText", as: :record, dependent: :destroy
 
+  # Custom scope to search ActionText body, tutorial I was following has loder version of ransack
+  scope :with_body_text, ->(query) {
+    joins(:rich_text_body).where("action_text_rich_texts.body LIKE ?", "%#{query}%")
+  }
 
     def self.ransackable_attributes(auth_object = nil)
         [ "title", "body", "created_at", "updated_at", "user_id", "views" ]
