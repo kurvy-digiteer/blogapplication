@@ -8,12 +8,60 @@ Rails.application.routes.draw do
     end
 
     # Admin dashboard routes
-    get "admin", to: "admin#index"
-    get "admin/posts"
-    get "admin/comments"
-    get "admin/users"
-    get "admin/show_post/:id", to: "admin#show_post", as: :admin_post
-    delete "admin/destroy_post/:id", to: "admin#destroy_post", as: :admin_destroy_post
+
+    namespace :admin do
+      # This sets the root path for the admin section
+      # When someone visits /admin, they'll see the admin dashboard
+      root to: "admin#index"
+
+      # Custom route for showing a post
+      # GET /admin/show_post/1 will show post with ID 1
+      # The 'as: :post' creates a helper method called 'admin_post_path'
+      get "show_post/:id", to: "admin#show_post", as: :post
+
+      # Custom route for deleting a post
+      # DELETE /admin/destroy_post/1 will delete post with ID 1
+      # The 'as: :destroy_post' creates a helper method called 'admin_destroy_post_path'
+      delete "destroy_post/:id", to: "admin#destroy_post", as: :destroy_post
+
+      # This line is VERY IMPORTANT, basta ganun. Ewan haha joke,
+      # It tells Rails to use the 'posts' resource for the admin section
+      # The 'only: [ :index ]' part means that only the 'index' action will be used
+      # The 'index' action is the default action for the 'posts' resource
+      # It displays a list of all posts
+      # GET /admin/posts will list all posts
+      # Creates helper: admin_posts_path
+      resources :posts, only: [ :index ]
+
+      # This creates routes for users with specific actions
+      resources :users do
+        member do
+          # GET /admin/users/1/edit - Shows edit form for user 1
+          # Creates helper: edit_admin_user_path(user)
+          get :edit
+
+          # PATCH /admin/users/1 - Updates user 1 i dont think this is needed but just in case
+          # Creates helper: admin_user_path(user)
+          patch :update
+
+          # PUT /admin/users/1 - Updates user 1
+          # Creates helper: admin_user_path(user)
+          put :update
+
+          # DELETE /admin/users/1 - Deletes user 1
+          # Creates helper: admin_user_path(user)
+          delete :destroy
+        end
+      end
+
+      # This creates routes for comments with specific actions
+      # GET /admin/comments - Lists all comments
+      # GET /admin/comments/1/edit - Shows edit form for comment 1
+      # PATCH /admin/comments/1 - Updates comment 1
+      # DELETE /admin/comments/1 - Deletes comment 1
+      # Creates helpers: admin_comments_path, edit_admin_comment_path, admin_comment_path
+      resources :comments, only: [ :index, :edit, :update, :destroy ]
+    end
   end
 
   get "search", to: "search#index"

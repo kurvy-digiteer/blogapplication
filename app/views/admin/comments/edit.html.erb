@@ -1,0 +1,30 @@
+<div class="container">
+  <h1 class="text-center">Admin Dashboard</h1>
+  <%= render "admin/nav_links" %>
+
+  <div class="card bg-white text-black mt-4">
+    <div class="card-body">
+      <h2 class="card-title mb-4">Edit Comment</h2>
+
+      <div class="mb-3">
+        <strong>Post:</strong> <%= link_to @comment.post.title, admin_post_path(@comment.post) %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Author:</strong> <%= @comment.user.name %>
+      </div>
+
+      <%= form_with(model: [:admin, @comment], local: true) do |f| %>
+        <div class="form-group mb-3">
+          <%= f.label :body, "Comment", class: "form-label" %>
+          <%= f.rich_text_area :body, class: "form-control bg-white text-black" %>
+        </div>
+
+        <div class="d-flex gap-2">
+          <%= f.submit "Update Comment", class: "btn btn-primary" %>
+          <%= link_to "Cancel", admin_post_path(@comment.post), class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div> 
