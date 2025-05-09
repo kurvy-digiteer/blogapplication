@@ -1,10 +1,40 @@
 Rails.application.routes.draw do
+  authenticated :user, ->(user) { user.admin? } do
+    # Admin authentication routes
+    devise_scope :user do
+      get "admin/login", to: "admin/sessions#new", as: :admin_login
+      post "admin/login", to: "admin/sessions#create"
+      delete "admin/logout", to: "admin/sessions#destroy", as: :admin_logout
+    end
+
+    # Admin dashboard routes
+    get "admin", to: "admin#index"
+    get "admin/posts"
+    get "admin/comments"
+    get "admin/users"
+    get "admin/show_post"
+  end
+
   get "search", to: "search#index"
   get "users/profile"
+
+  # Custom Devise routes
+  devise_scope :user do
+    get "login", to: "users/sessions#new", as: :user_login
+    post "login", to: "users/sessions#create"
+    delete "logout", to: "users/sessions#destroy", as: :user_logout
+    get "sign_up", to: "users/registrations#new", as: :user_signup
+    post "sign_up", to: "users/registrations#create"
+    get "edit", to: "users/registrations#edit", as: :edit_user
+    put "edit", to: "users/registrations#update"
+    patch "edit", to: "users/registrations#update"
+    delete "", to: "users/registrations#destroy", as: :delete_user
+  end
+
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
-  }
+  }, skip: [ :sessions, :registrations ]
 
   get "u/:id", to: "users#profile", as: "user"
 
@@ -20,10 +50,6 @@ Rails.application.routes.draw do
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
-   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
-   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
-   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
-
-   # Defines the root path route ("/")
-   root "pages#home"
+  # Defines the root path route ("/")
+  root "pages#home"
 end

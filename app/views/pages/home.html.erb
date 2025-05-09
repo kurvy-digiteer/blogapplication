@@ -13,7 +13,7 @@
       There are <%= pluralize(User.count, "user") %> in the website.
     <% end %>
   <% else %>
-    <p>Welcome, guest! Please <%= link_to "sign in", new_user_session_path %> or <%= link_to "sign up", new_user_registration_path %>.</p>
+    <p>Welcome, guest! Please <%= link_to "sign in", user_login_path %> or <%= link_to "sign up", user_signup_path %>.</p>
   <% end %>
 
   <p>Read more about me! Or check the rest of the site</p>
