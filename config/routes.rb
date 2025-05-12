@@ -34,25 +34,12 @@ Rails.application.routes.draw do
       resources :posts, only: [ :index ]
 
       # This creates routes for users with specific actions
-      resources :users do
-        member do
-          # GET /admin/users/1/edit - Shows edit form for user 1
-          # Creates helper: edit_admin_user_path(user)
-          get :edit
-
-          # PATCH /admin/users/1 - Updates user 1 i dont think this is needed but just in case
-          # Creates helper: admin_user_path(user)
-          patch :update
-
-          # PUT /admin/users/1 - Updates user 1
-          # Creates helper: admin_user_path(user)
-          put :update
-
-          # DELETE /admin/users/1 - Deletes user 1
-          # Creates helper: admin_user_path(user)
-          delete :destroy
-        end
-      end
+      # GET /admin/users - Lists all users
+      # GET /admin/users/1/edit - Shows edit form for user 1
+      # PATCH/PUT /admin/users/1 - Updates user 1
+      # DELETE /admin/users/1 - Deletes user 1
+      # Creates helpers: admin_users_path, edit_admin_user_path, admin_user_path
+      resources :users, only: [ :index, :edit, :update, :destroy ]
 
       # This creates routes for comments with specific actions
       # GET /admin/comments - Lists all comments
@@ -63,6 +50,31 @@ Rails.application.routes.draw do
       resources :comments, only: [ :index, :edit, :update, :destroy ]
     end
   end
+
+  # FOLLOW THIS FORMAT IF YOU WANT TO ADD MORE ROUTES TO THE ADMIN SECTION WITH
+  # SPECIFIC ACTIONS FOR A RESOURCE, LIKE THE USERS RESOURCE ABOVE, if you want to
+  # add more routes for the users resource THAT ARE NOT IN THE RESTFUL ROUTES (this is very useful btw),
+  # you can do it like this:
+  # resources :users do
+  #   member do
+  #     # GET /admin/users/1/edit - Shows edit form for user 1
+  #     # Creates helper: edit_admin_user_path(user)
+  #     get :edit
+
+  # PATCH /admin/users/1 - Updates user 1 i dont think this is needed but just in case
+  # Creates helper: admin_user_path(user)
+  # patch :update
+
+  # PUT /admin/users/1 - Updates user 1
+  # Creates helper: admin_user_path(user)
+  # put :update
+
+  # DELETE /admin/users/1 - Deletes user 1
+  # Creates helper: admin_user_path(user)
+  # delete :destroy
+  # # post :dowhatever_command_here
+  # end
+  # end
 
   get "search", to: "search#index"
   get "users/profile"
