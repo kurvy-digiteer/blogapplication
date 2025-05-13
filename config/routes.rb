@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
-  # get, post, delete, patch, put, etc. "folder/file" or "folder#file", or "folder/file#action", or
-  # "folder", to "controller#action", as: :name_path or
+  # get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
+  # "folder", to: "controller#action" or to: "folder#action", as: :name.
+  # This name will be read as (namespace or edit, create, update, destroy, etc.)_suffix_name_path
   get "featured", to: "featured#index", as: :featured
   resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ]
     # authenticated :user, ->(user) { user.admin? } do
