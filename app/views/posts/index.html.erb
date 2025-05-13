@@ -1,16 +1,31 @@
-<p style="color: green"><%= notice %></p>
-
 <% content_for :title, "Posts" %>
 
 <div class = "container">
-<h1>Posts</h1>
+<h1> Posts </h1> 
+
+<%= form_with url: posts_path, method: :get, local: true do %>
+  <label for="filter">Show posts:</label>
+  <%= select_tag :filter, 
+  options_for_select([["All", ""], 
+  ["Today", "today"], 
+  ["This Week", "this_week"], 
+  ["This Month", "this_month"]], params[:filter]), onchange: "this.form.submit();" %>
+<% end %>
+
+<%= form_with url: posts_path, method: :get, local: true do %>
+  <label for="filter_date">Filter by date:</label>
+  <%= text_field_tag :filter_date, params[:filter_date], class: "datepicker", id: "filter_date", autocomplete: "off" %>
+  <%= submit_tag "Filter", class: "btn btn-primary" %>
+<% end %>
 
 <div id="posts">
   <% @posts.each do |post| %>
-    <%= render post %>
-    <p>
-      <%= link_to "Show this post", post %>
-    </p>
+    <% if post.active %>
+      <%= render post %>
+      <p>
+        <%= link_to "Show this post", post %>
+      </p>
+    <% end %>
   <% end %>
 </div>
 

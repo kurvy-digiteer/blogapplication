@@ -9,7 +9,7 @@ class Post < ApplicationRecord
     # For ransack search
     has_one :content, class_name: "ActionText::RichText", as: :record, dependent: :destroy
 
-  # Custom scope to search ActionText body, tutorial I was following has loder version of ransack
+  # Custom scope to search ActionText body, tutorial I was following has older version of ransack
   scope :with_body_text, ->(query) {
     joins(:rich_text_body).where("action_text_rich_texts.body LIKE ?", "%#{query}%")
   }

@@ -1,0 +1,14 @@
+<div id="<%= dom_id post %>">
+  <h2><%= post.title %></h2>
+  <p><%= post.body %></p>
+  <p>Created by: <%= post.user.name %></p>
+  <p>Views: <%= post.views %></p>
+  <p>Created at: <%= post.created_at.strftime("%B %d, %Y") %></p>
+  
+  <% if current_user == post.user || current_user&.admin? %>
+    <div class="actions">
+      <%= link_to "Edit", edit_featured_path(post) %> |
+      <%= button_to "Delete", featured_path(post), method: :delete, class: "btn btn-danger" %>
+    </div>
+  <% end %>
+</div> 

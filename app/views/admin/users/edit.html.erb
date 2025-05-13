@@ -28,6 +28,12 @@
           <%= f.email_field :email, class: "form-control bg-dark text-white" %>
         </div>
 
+        <%= f.label "New Password", class: "form-label" %>
+        <%= f.password_field :password, class: "form-control bg-dark text-white" %>
+
+        <%= f.label "New Password Confirmation", class: "form-label" %>
+        <%= f.password_field :password_confirmation, class: "form-control bg-dark text-white" %>
+
         <div class="form-group mb-3">
           <%= f.label :role, class: "form-label" %>
           <%= f.select :role, 

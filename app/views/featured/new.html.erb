@@ -1,0 +1,14 @@
+<% content_for :title, "New featured post" %>
+
+<div class="container">
+  <h1>New featured post</h1>
+
+<%= render "form", post: @post %>
+
+<br>
+
+<div class="mt-3">
+  <%= link_to "Back to Featured Posts", featured_path %>
+</div> 
+
+</div>

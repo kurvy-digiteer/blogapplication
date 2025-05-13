@@ -4,3 +4,9 @@ import "controllers"
 
 import "trix"
 import "@rails/actiontext"
+
+import flatpickr from "flatpickr"
+
+document.addEventListener("turbo:load", () => {
+    flatpickr(".datepicker", {});
+  });

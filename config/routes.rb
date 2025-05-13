@@ -1,11 +1,15 @@
 Rails.application.routes.draw do
-  authenticated :user, ->(user) { user.admin? } do
+  # get, post, delete, patch, put, etc. "folder/file" or "folder#file", or "folder/file#action", or
+  # "folder", to "controller#action", as: :name_path or
+  get "featured", to: "featured#index", as: :featured
+  resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ]
+    # authenticated :user, ->(user) { user.admin? } do
     # Admin authentication routes WIP
     devise_scope :user do
       get "admin/login", to: "admin/sessions#new", as: :admin_login
       post "admin/login", to: "admin/sessions#create"
       delete "admin/logout", to: "admin/sessions#destroy", as: :admin_logout
-    end
+    # end
 
     # Admin dashboard routes
 
@@ -92,7 +96,8 @@ Rails.application.routes.draw do
     delete "", to: "users/registrations#destroy", as: :delete_user
   end
 
-  # Default devise routes as said by devise documentation, do not remove just in case
+  # Default devise routes as said by devise documentation, do not remove just in case even if
+  # it wont be used
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"

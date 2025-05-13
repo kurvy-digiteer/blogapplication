@@ -1,11 +1,10 @@
-class PostsController < ApplicationController
+class FeaturedController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
   before_action :authenticate_user!, except: %i[ show index]
   before_action :authorize_user!, only: %i[ edit update destroy ]
-
   def index
     @filter = params[:filter]
-    @posts = Post.all
+    @posts = Post.where(feature: true)
 
     case @filter
     when "today"
@@ -28,7 +27,6 @@ class PostsController < ApplicationController
     @posts = @posts.order(created_at: :desc)
   end
 
-  # GET /posts/1 or /posts/1.json
   def show
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
@@ -48,10 +46,11 @@ class PostsController < ApplicationController
     @post = Post.new(post_params)
     @post.user = current_user
     @post.active = true
+    @post.feature = true
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to posts_path, notice: "Post was successfully created." }
+        format.html { redirect_to featured_index_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
 
       else
@@ -79,25 +78,25 @@ class PostsController < ApplicationController
     @post.destroy!
 
     respond_to do |format|
-      format.html { redirect_to posts_path, status: :see_other, notice: "Post was successfully destroyed." }
+      format.html { redirect_to featured_path, status: :see_other, notice: "Post was successfully destroyed." }
       format.json { head :no_content }
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_post
-      @post = Post.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(params[:id])
+  end
 
-    def authorize_user!
-      unless current_user == @post.user || current_user.admin?
-        redirect_to posts_path, alert: "You are not authorized to perform this action."
-      end
+  def authorize_user!
+    unless current_user == @post.user || current_user.admin?
+      redirect_to featured_path, alert: "You are not authorized to perform this action."
     end
+  end
 
-    # Only allow a list of trusted parameters through.
-    def post_params
-      params.require(:post).permit(:title, :body, :active, :feature)
-    end
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :body, :active, :feature)
+  end
 end

@@ -28,5 +28,27 @@ User.create(email: "testcase@example.com",
 5.times do |x|
     Post.create(title: "Title #{x}",
         body: "Body #{x} The quick brown fox jumps over the lazy dog",
-        user_id: User.first.id)
+        user_id: User.first.id,
+        active: true,
+        feature: false)
 end
+
+# Create 4 posts, each in a different month
+dates = [
+    DateTime.new(2025, 1, 15, 10, 0, 0), # January 15, 2025
+    DateTime.new(2025, 2, 20, 12, 0, 0), # February 20, 2025
+    DateTime.new(2025, 3, 10, 14, 0, 0), # March 10, 2025
+    DateTime.new(2025, 4, 5, 16, 0, 0)   # April 5, 2025
+  ]
+
+  dates.each_with_index do |date, i|
+    Post.create(
+      title: "Old Post #{i + 1}",
+      body: "This is a post from #{date.strftime('%B %Y')}.",
+      user_id: User.first.id,
+      created_at: date,
+      updated_at: date,
+      active: true,
+      feature: true
+    )
+  end
