@@ -3,7 +3,7 @@
   <p><%= post.body %></p>
   <p>Created by: <%= post.user.name %></p>
   <p>Views: <%= post.views %></p>
-  <p>Created at: <%= post.created_at.strftime("%B %d, %Y") %></p>
+  <h5>Posted on <%= post.created_at.strftime("%B %d, %Y") %></h5>
   
   <% if current_user == post.user || current_user&.admin? %>
     <div class="actions">

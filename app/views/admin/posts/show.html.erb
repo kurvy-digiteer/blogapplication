@@ -7,8 +7,8 @@
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="card-title"><%= @post.title %></h2>
         <div>
-          <%= link_to "Edit Post Contents", edit_post_path(@post), class: "btn btn-warning" %>
-          <%= button_to "Delete", admin_destroy_post_path(@post), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } } %>
+          <%= link_to "Edit Post", edit_admin_post_path(@post), class: "btn btn-warning" %>
+          <%= button_to "Delete", admin_post_path(@post), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } } %>
         </div>
       </div>
 
@@ -25,25 +25,24 @@
       </div>
 
       <div class="mb-3">
-        <strong>Featured:</strong> <%= @post.feature %>
+        <strong>Featured:</strong> <%= @post.feature ? "Yes" : "No" %>
       </div>
 
       <div class="mb-3">
-        <strong>Active:</strong> <%= @post.active %>
+        <strong>Active:</strong> <%= @post.active ? "Yes" : "No" %>
       </div>
 
       <div class="mb-4">
         <h4>Content:</h4>
         <div class="bg-dark p-3 rounded">
-          <%= @post.content %>
+          <%= @post.body %>
         </div>
       </div>
 
       <div class="mb-4">
-        <h4>Comments (<%= @post.comments.count %>)</h4>
+        <h4>Comments (<%= @comments.count %>)</h4>
         <div class="table-responsive">
           <table class="table table-dark table-striped">
-
             <thead>
               <tr>
                 <th>User</th>
@@ -52,18 +51,11 @@
                 <th>Actions</th>
               </tr>
             </thead>
-
             <tbody>
-              <% @post.comments.includes(:user).each do |comment| %>
+              <% @comments.each do |comment| %>
                 <tr>
                   <td><%= comment.user.name %></td>
-                  <td>
-                    <% if comment.body.present? %>
-                      <%= comment.body.to_plain_text.truncate(50) %>
-                    <% else %>
-                      <em>No content</em>
-                    <% end %>
-                  </td>
+                  <td><%= comment.body.to_plain_text.truncate(50) %></td>
                   <td><%= time_ago_in_words(comment.created_at) %> ago</td>
                   <td>
                     <%= link_to "Edit", edit_admin_comment_path(comment), class: "btn btn-warning btn-sm" %>
@@ -73,7 +65,6 @@
               <% end %>
             </tbody>
           </table>
-
         </div>
       </div>
     </div>

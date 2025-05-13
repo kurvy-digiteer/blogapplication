@@ -1,16 +1,65 @@
-class Admin::PostsController < ApplicationController
-  before_action :authenticate_user!
-  before_action :require_admin
+class Admin::PostsController < Admin::AdminController
+  before_action :set_post, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @posts = Post.includes(:user, :comments).order(created_at: :desc)
+    @posts = Post.all.order(created_at: :desc)
+  end
+
+  def show
+    @post.update(views: @post.views + 1)
+    @comments = @post.comments.order(created_at: :desc)
+  end
+
+  # GET /posts/new
+  def new
+    @post = Post.new
+  end
+
+  # GET /posts/1/edit
+  def edit
+  end
+
+  # PATCH/PUT /posts/1 or /posts/1.json
+  def update
+    respond_to do |format|
+      if @post.update(post_params)
+        format.html { redirect_to admin_post_path(@post), notice: "Post was successfully updated." }
+        format.json { render :show, status: :ok, location: [ :admin, @post ] }
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+        format.json { render json: @post.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  # DELETE /posts/1 or /posts/1.json
+  def destroy
+    @post.destroy
+    respond_to do |format|
+      format.html { redirect_to admin_posts_path, notice: "Post was successfully deleted." }
+      format.json { head :no_content }
+    end
   end
 
   private
-
-  def require_admin
-    unless current_user.admin?
-      redirect_to root_path, alert: "You are not authorized to access this area."
+  # Use callbacks to share common setup or constraints between actions.
+  def set_post
+    @post = Post.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    respond_to do |format|
+      format.html { redirect_to admin_posts_path, alert: "Post not found." }
+      format.json { render json: { error: "Post not found" }, status: :not_found }
     end
+  end
+
+  def authorize_user!
+    unless current_user == @post.user || current_user.admin?
+      redirect_to featured_path, alert: "You are not authorized to perform this action."
+    end
+  end
+
+  # Only allow a list of trusted parameters through.
+  def post_params
+    params.require(:post).permit(:title, :body, :active, :feature)
   end
 end

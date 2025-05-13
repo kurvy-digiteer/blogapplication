@@ -7,6 +7,11 @@ import "@rails/actiontext"
 
 import flatpickr from "flatpickr"
 
-document.addEventListener("turbo:load", () => {
-    flatpickr(".datepicker", {});
-  });
+document.addEventListener('DOMContentLoaded', function() {
+  flatpickr('.datepicker', {
+    enableTime: true,
+    plugins: [ 
+      new ConfirmDatePlugin({})
+    ]
+  })
+})

@@ -1,8 +1,9 @@
 Rails.application.routes.draw do
-  # get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
+  # METHOD NAME: get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
-  # This name will be read as (namespace or edit, create, update, destroy, etc.)_suffix_name_path
+  # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
   get "featured", to: "featured#index", as: :featured
+  # Read as featured_path if you wanna access the index page of the /featured folder
   resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ]
     # authenticated :user, ->(user) { user.admin? } do
     # Admin authentication routes WIP
@@ -19,24 +20,8 @@ Rails.application.routes.draw do
       # When someone visits /admin, they'll see the admin dashboard
       root to: "admin#index"
 
-      # Custom route for showing a post
-      # GET /admin/show_post/1 will show post with ID 1
-      # The 'as: :post' creates a helper method called 'admin_post_path'
-      get "show_post/:id", to: "admin#show_post", as: :post
-
-      # Custom route for deleting a post
-      # DELETE /admin/destroy_post/1 will delete post with ID 1
-      # The 'as: :destroy_post' creates a helper method called 'admin_destroy_post_path'
-      delete "destroy_post/:id", to: "admin#destroy_post", as: :destroy_post
-
-      # This line is VERY IMPORTANT, basta ganun. Ewan haha joke,
-      # It tells Rails to use the 'posts' resource for the admin section
-      # The 'only: [ :index ]' part means that only the 'index' action will be used
-      # The 'index' action is the default action for the 'posts' resource
-      # It displays a list of all posts
-      # GET /admin/posts will list all posts
-      # Creates helper: admin_posts_path
-      resources :posts, only: [ :index ]
+      # Use proper RESTful routing for posts
+      resources :posts, only: [ :index, :show, :edit, :update, :destroy ]
 
       # This creates routes for users with specific actions
       # GET /admin/users - Lists all users
