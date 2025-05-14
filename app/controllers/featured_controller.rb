@@ -20,7 +20,7 @@ class FeaturedController < ApplicationController
         date = Date.parse(params[:filter_date])
         @posts = @posts.where(created_at: date.all_day)
       rescue ArgumentError
-        # Invalid date, ignore filter
+        flash.now[:alert] = "Invalid date format"
       end
     end
 

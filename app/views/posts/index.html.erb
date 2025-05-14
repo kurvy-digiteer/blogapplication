@@ -15,7 +15,7 @@
 <%= form_with url: posts_path, method: :get, local: true do %>
   <label for="filter_date">Filter by date:</label>
   <%= text_field_tag :filter_date, params[:filter_date], class: "datepicker", id: "filter_date", autocomplete: "off" %>
-  <%= submit_tag "Filter", class: "btn btn-primary" %>
+  
 <% end %>
 
 <div id="posts">
