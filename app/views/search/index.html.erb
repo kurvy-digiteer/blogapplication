@@ -7,7 +7,7 @@
                 <tr></tr>
                 <th>Title</th>
                 <th>Blog content</th>
-                <th>Users</th>
+                <th>Users/Customers</th>
             </tr>
         </thead>
 
@@ -16,7 +16,11 @@
             <tr>
                 <td><%= link_to post.title, post %></td> 
                 <td><%= post.body.to_plain_text.truncate_words(25) %></td>
-                <td><%= link_to post.user.name, post.user %></td>
+                <% if post.user.present? %>
+                    <td><%= link_to post.user.name, post.user %></td>
+                <% else %>
+                    <td><%= link_to post.customer.name, post.customer %></td>
+                <% end %>
             </tr>
             <% end %>
         </tbody>

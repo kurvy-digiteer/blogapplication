@@ -9,6 +9,12 @@ class Admin::UsersController < Admin::AdminController
   end
 
   def update
+    user_params = user_params()
+    if user_params[:password].blank? 
+      user_params.delete(:password)
+      user_params.delete(:password_confirmation)
+    end
+
     if @user.update(user_params)
       redirect_to admin_users_path, notice: "User was successfully updated."
     else

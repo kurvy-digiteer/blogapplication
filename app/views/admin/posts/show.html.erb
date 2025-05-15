@@ -13,7 +13,11 @@
       </div>
 
       <div class="mb-3">
-        <strong>Author:</strong> <%= @post.user.name %>
+        <% if @post.user.present? %>
+          <strong>Author:</strong> <%= @post.user.name %>
+        <% elsif @post.customer.present? %>
+          <strong>Author:</strong> <%= @post.customer.name %>
+        <% end %>
       </div>
 
       <div class="mb-3">
@@ -54,7 +58,11 @@
             <tbody>
               <% @comments.each do |comment| %>
                 <tr>
-                  <td><%= comment.user.name %></td>
+                  <% if comment.user.present? %>
+                    <td><%= comment.user.name %></td>
+                  <% elsif comment.customer.present? %>
+                    <td><%= comment.customer.name %></td>
+                  <% end %>
                   <td><%= comment.body.to_plain_text.truncate(50) %></td>
                   <td><%= time_ago_in_words(comment.created_at) %> ago</td>
                   <td>

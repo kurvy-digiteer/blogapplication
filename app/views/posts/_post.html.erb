@@ -5,7 +5,13 @@
     <% if post.feature %>
       <h6>FEATURED</h6>
     <% end %>
-    <h6>Posted by <%= link_to post.user.name, user_path(post.user)%> </h6>
+    <h6>Posted by 
+      <% if post.user.present? %>
+        <%= link_to post.user.name, user_path(post.user) %>
+      <% elsif post.customer.present? %>
+        <%= link_to post.customer.name, customer_path(post.customer) %>
+      <% end %>
+    </h6>
     <h6><%= pluralize(post.views, "view") %></h6>
 
   <div>

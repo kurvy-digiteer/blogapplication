@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  
   # METHOD NAME: get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
   # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
@@ -7,11 +8,7 @@ Rails.application.routes.draw do
   resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ]
     # authenticated :user, ->(user) { user.admin? } do
     # Admin authentication routes WIP
-    devise_scope :user do
-      get "admin/login", to: "admin/sessions#new", as: :admin_login
-      post "admin/login", to: "admin/sessions#create"
-      delete "admin/logout", to: "admin/sessions#destroy", as: :admin_logout
-    # end
+
 
     # Admin dashboard routes
 
@@ -31,6 +28,8 @@ Rails.application.routes.draw do
       # Creates helpers: admin_users_path, edit_admin_user_path, admin_user_path
       resources :users, only: [ :index, :edit, :update, :destroy ]
 
+      resources :customers, only: [ :index, :edit, :update, :destroy ]
+
       # This creates routes for comments with specific actions
       # GET /admin/comments - Lists all comments
       # GET /admin/comments/1/edit - Shows edit form for comment 1
@@ -39,7 +38,7 @@ Rails.application.routes.draw do
       # Creates helpers: admin_comments_path, edit_admin_comment_path, admin_comment_path
       resources :comments, only: [ :index, :edit, :update, :destroy ]
     end
-  end
+
 
   # FOLLOW THIS FORMAT IF YOU WANT TO ADD MORE ROUTES TO THE ADMIN SECTION WITH
   # SPECIFIC ACTIONS FOR A RESOURCE, LIKE THE USERS RESOURCE ABOVE, if you want to
@@ -68,35 +67,38 @@ Rails.application.routes.draw do
 
   get "search", to: "search#index"
   get "users/profile"
+  get "customers/profile"
 
   # Custom Devise routes for user login, signup, edit, and delete specifically
-  devise_scope :user do
-    get "login", to: "users/sessions#new", as: :user_login
-    post "login", to: "users/sessions#create"
-    delete "logout", to: "users/sessions#destroy", as: :user_logout
-    get "sign_up", to: "users/registrations#new", as: :user_signup
-    post "sign_up", to: "users/registrations#create"
-    get "edit", to: "users/registrations#edit", as: :edit_user
-    put "edit", to: "users/registrations#update"
-    patch "edit", to: "users/registrations#update"
-    delete "", to: "users/registrations#destroy", as: :delete_user
-  end
-
-  # Default devise routes as said by devise documentation, do not remove just in case even if
-  # it wont be used
-  devise_for :users, controllers: {
+  devise_for :users, path: "admin", path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    sign_up: 'register',
+    edit: 'edit'
+  }, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
-  }, skip: [ :sessions, :registrations ]
+  }
+
+  devise_for :customers, path: '', path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    sign_up: 'register',
+    edit: 'edit'
+  }, controllers: {
+    sessions: "customers/sessions",
+    registrations: "customers/registrations"
+  }
+
 
   get "u/:id", to: "users#profile", as: "user"
+  get "c/:id", to: "customers#profile", as: "customer"
 
   # /posts/1/comments/4
   resources :posts do
     resources :comments
   end
 
-  get "about", to: "pages#about"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

@@ -18,7 +18,11 @@
         <tr>
           <th scope="row"><%= post.id %></th>
           <td><%= post.title.truncate(15) %></td>
-          <td><%= post.user.name %></td>
+          <% if post.user.present? %>
+            <td><%= post.user.name %></td>
+          <% elsif post.customer.present? %>
+            <td><%= post.customer.name %></td>
+          <% end %>
           <td><%= pluralize(post.comments.count, "Comment") %></td>
           <td>
             <%= link_to "View", admin_post_path(post), class: "btn btn-primary btn-sm" %>

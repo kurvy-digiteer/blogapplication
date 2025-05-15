@@ -11,6 +11,7 @@
     ["This Week", "this_week"], 
     ["This Month", "this_month"]], params[:filter]), onchange: "this.form.submit();" %>
   <% end %>
+  <br>
 
   <%= form_with url: featured_path, method: :get, local: true do %>
     <label for="filter_date">Filter by date:</label>

@@ -1,11 +1,11 @@
 class PostsController < ApplicationController
   before_action :set_post, only: %i[ show edit update destroy ]
-  before_action :authenticate_user!, except: %i[ show index]
-  before_action :authorize_user!, only: %i[ edit update destroy ]
+  before_action :authenticate_user_or_customer!, except: %i[ show index]
+  before_action :authorize_user_or_customer!, only: %i[ edit update destroy ]
 
   def index
     @filter = params[:filter]
-    @posts = Post.all
+    @posts = Post.all.includes(:user, :customer)
 
     case @filter
     when "today"
@@ -46,14 +46,17 @@ class PostsController < ApplicationController
   # POST /posts or /posts.json
   def create
     @post = Post.new(post_params)
-    @post.user = current_user
+    if user_signed_in?
+      @post.user = current_user
+    else
+      @post.customer = current_customer
+    end
     @post.active = true
 
     respond_to do |format|
       if @post.save
         format.html { redirect_to posts_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
-
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
@@ -90,9 +93,21 @@ class PostsController < ApplicationController
       @post = Post.find(params[:id])
     end
 
-    def authorize_user!
-      unless current_user == @post.user || current_user.admin?
-        redirect_to posts_path, alert: "You are not authorized to perform this action."
+    def authenticate_user_or_customer!
+      unless user_signed_in? || customer_signed_in?
+        redirect_to new_user_session_path, alert: "Please sign in to continue."
+      end
+    end
+
+    def authorize_user_or_customer!
+      if user_signed_in?
+        unless current_user == @post.user || current_user.admin?
+          redirect_to posts_path, alert: "You are not authorized to perform this action."
+        end
+      elsif customer_signed_in?
+        unless current_customer == @post.customer
+          redirect_to posts_path, alert: "You are not authorized to perform this action."
+        end
       end
     end
 

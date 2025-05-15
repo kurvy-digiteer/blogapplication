@@ -12,13 +12,30 @@
 
             <li><%= link_to "New Post", new_post_path, class:"dropdown-item" %></li>
 
-            <li><a class="dropdown-item" href="#">Action</a></li>
-
-            <li><%= link_to "Edit Account", edit_user_path, class:"dropdown-item"  %></li>
+            <li><%= link_to "Edit Account", edit_user_registration_path, class:"dropdown-item"  %></li>
 
             <li><hr class="dropdown-divider"></li>
         
-            <li><%= button_to "Sign Out", user_logout_path, method: :delete, class:"dropdown-item"  %></li>
+            <li><%= button_to "Sign Out", destroy_user_session_path, method: :delete, class:"dropdown-item"  %></li>
+
+          </ul>
+</li>
+
+<% elsif current_customer %>
+
+<li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <%= current_customer.name%>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="navbarDropdown">
+
+            <li><%= link_to "New Post", new_post_path, class:"dropdown-item" %></li>
+
+            <li><%= link_to "Edit Account", edit_customer_registration_path, class:"dropdown-item"  %></li>
+
+            <li><hr class="dropdown-divider"></li>
+        
+            <li><%= button_to "Sign Out", destroy_customer_session_path, method: :delete, class:"dropdown-item"  %></li>
 
           </ul>
 </li>
@@ -26,11 +43,21 @@
 <% else %>
 
         <li class="nav-item">
-          <%= link_to "Sign Up", user_signup_path, class: "nav-link" %>
+          <%= link_to "User Sign Up", new_user_registration_path, class: "nav-link" %>
         </li>
 
         <li class="nav-item">
-          <%= link_to "Login", user_login_path, class: "nav-link" %>
+          <%= link_to "User Login", new_user_session_path, class: "nav-link" %>
         </li>
 
+        <li class="nav-item">
+          <%= link_to "Customer Sign Up", new_customer_registration_path, class: "nav-link" %>
+        </li>
+
+        <li class="nav-item">
+          <%= link_to "Customer Login", new_customer_session_path, class: "nav-link" %>
+        </li>
+
+        <li class="nav-item">
+          
 <% end %>

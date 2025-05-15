@@ -1,14 +1,25 @@
 <div id="<%= dom_id post %>">
-  <h2><%= post.title %></h2>
-  <p><%= post.body %></p>
-  <p>Created by: <%= post.user.name %></p>
-  <p>Views: <%= post.views %></p>
-  <h5>Posted on <%= post.created_at.strftime("%B %d, %Y") %></h5>
   
-  <% if current_user == post.user || current_user&.admin? %>
-    <div class="actions">
-      <%= link_to "Edit", edit_featured_path(post) %> |
-      <%= button_to "Delete", featured_path(post), method: :delete, class: "btn btn-danger" %>
-    </div>
-  <% end %>
-</div> 
+    <h2><%= post.title %></h2>
+
+    <h5>Posted on <%= post.created_at.strftime("%B %d, %Y") %></h5>
+
+    <% if post.feature %>
+      <h6>FEATURED</h6>
+    <% end %>
+
+    <h6>Posted by 
+      <% if post.user.present? %>
+        <%= link_to post.user.name, user_path(post.user) %>
+      <% elsif post.customer.present? %>
+        <%= link_to post.customer.name, customer_path(post.customer) %>
+      <% end %>
+    </h6>
+    
+    <h6><%= pluralize(post.views, "view") %></h6>
+
+  <div>
+    <%= post.body %>
+  </div>
+
+</div>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_13_053651) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_14_073000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -54,11 +54,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_053651) do
 
   create_table "comments", force: :cascade do |t|
     t.integer "post_id", null: false
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "customer_id"
+    t.index ["customer_id"], name: "index_comments_on_customer_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
+    t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present_comments"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "email"
+    t.string "encrypted_password"
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "name"
+    t.integer "views", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|
@@ -66,10 +81,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_053651) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "views", default: 0
-    t.integer "user_id", null: false
-    t.boolean "active", null: false, default: false
-    t.boolean "feature", null: false, default: false
+    t.integer "user_id"
+    t.boolean "active"
+    t.boolean "feature"
+    t.integer "customer_id"
+    t.index ["customer_id"], name: "index_posts_on_customer_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
+    t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present"
   end
 
   create_table "users", force: :cascade do |t|
@@ -82,14 +100,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_13_053651) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.integer "views", default: 0
-    t.integer "role", default: 0
+    t.integer "role", default: 1
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "comments", "customers"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
+  add_foreign_key "posts", "customers"
   add_foreign_key "posts", "users"
 end

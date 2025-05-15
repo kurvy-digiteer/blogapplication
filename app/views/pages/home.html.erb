@@ -10,13 +10,14 @@
     <% if current_user.admin? %>
       <p>Hello <%= current_user.name %> </p>
       <p>You are an [<%= current_user.role_name %>] </p>
-      There are <%= pluralize(User.count, "user") %> in the website.
+      There are <%= pluralize(User.count, "user") %> and <%= pluralize(Customer.count, "customer") %> in the website.
     <% end %>
+
   <% else %>
-    <p>Welcome, guest! Please <%= link_to "sign in", user_login_path %> or <%= link_to "sign up", user_signup_path %>.</p>
+    <p>Welcome, guest! Please <%= link_to "sign in", new_customer_session_path %> or 
+    <%= link_to "sign up", new_customer_registration_path %>.</p>
   <% end %>
 
   <p>Read more about me! Or check the rest of the site</p>
-  <%= link_to "About me", about_path, class:"btn btn-primary" %>
   <%= link_to "Blog/Posts", posts_path, class:"btn btn-primary"%>
 </div>
