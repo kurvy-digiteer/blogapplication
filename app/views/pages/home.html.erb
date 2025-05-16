@@ -13,6 +13,10 @@
       There are <%= pluralize(User.count, "user") %> and <%= pluralize(Customer.count, "customer") %> in the website.
     <% end %>
 
+    <% elsif current_customer %>
+      <p>Hello <%= current_customer.name %>! </p>
+      <p>You are a customer! </p>
+
   <% else %>
     <p>Welcome, guest! Please <%= link_to "sign in", new_customer_session_path %> or 
     <%= link_to "sign up", new_customer_registration_path %>.</p>

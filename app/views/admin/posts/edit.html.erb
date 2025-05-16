@@ -7,7 +7,12 @@
       <h2 class="card-title mb-4">Edit Post</h2>
 
       <div class="mb-3">
-        <strong>Author:</strong> <%= @post.user.name %>
+        <strong>Author:</strong>
+        <% if @post.user %>
+          <%= @post.user.name %>
+        <% else %>
+          <%= @post.customer.name %>
+        <% end %>
       </div>
 
       <div class="mb-3">

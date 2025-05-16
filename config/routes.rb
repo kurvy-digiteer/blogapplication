@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  
   # METHOD NAME: get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
   # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
@@ -71,20 +70,20 @@ Rails.application.routes.draw do
 
   # Custom Devise routes for user login, signup, edit, and delete specifically
   devise_for :users, path: "admin", path_names: {
-    sign_in: 'login',
-    sign_out: 'logout',
-    sign_up: 'register',
-    edit: 'edit'
+    sign_in: "login",
+    sign_out: "logout",
+    sign_up: "register",
+    edit: "edit"
   }, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
   }
 
-  devise_for :customers, path: '', path_names: {
-    sign_in: 'login',
-    sign_out: 'logout',
-    sign_up: 'register',
-    edit: 'edit'
+  devise_for :customers, path: "", path_names: {
+    sign_in: "login",
+    sign_out: "logout",
+    sign_up: "register",
+    edit: "edit"
   }, controllers: {
     sessions: "customers/sessions",
     registrations: "customers/registrations"
@@ -97,6 +96,7 @@ Rails.application.routes.draw do
   # /posts/1/comments/4
   resources :posts do
     resources :comments
+    resources :likes, only: [ :create, :destroy ]
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

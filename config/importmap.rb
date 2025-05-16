@@ -10,3 +10,4 @@ pin "@rails/actiontext", to: "actiontext.esm.js"
 pin "flatpickr", to: "https://ga.jspm.io/npm:flatpickr@4.6.13/dist/esm/index.js"
 pin "flatpickr/dist/flatpickr.css", to: "https://ga.jspm.io/npm:flatpickr@4.6.13/dist/flatpickr.css"
 pin "flatpickr/dist/esm/plugins/confirmDate", to: "flatpickr/plugins/confirmDate.js"
+pin "@fortawesome/fontawesome-free", to: "@fortawesome--fontawesome-free.js" # @6.7.2

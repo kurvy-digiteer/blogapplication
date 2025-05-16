@@ -7,10 +7,19 @@ class Post < ApplicationRecord
     belongs_to :customer, optional: true
 
     has_many :comments, dependent: :destroy
+    has_many :likes, dependent: :destroy
 
     has_rich_text :body
     # For ransack search
     has_one :content, class_name: "ActionText::RichText", as: :record, dependent: :destroy
+
+    def likes_count
+        likes.count
+    end
+
+    def liked_by?(liker)
+        likes.exists?(liker: liker)
+    end
 
   # Custom scope to search ActionText body, tutorial I was following has older version of ransack
   scope :with_body_text, ->(query) {
@@ -22,7 +31,7 @@ class Post < ApplicationRecord
     end
 
     def self.ransackable_associations(auth_object = nil)
-        [ "user", "customer", "comments" ]
+        [ "user", "customer", "comments", "likes" ]
     end
 
     private

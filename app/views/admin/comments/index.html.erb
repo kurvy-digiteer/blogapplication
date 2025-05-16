@@ -5,11 +5,11 @@
   <table class="table table-dark table-striped">
     <thead>
       <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Post</th>
-        <th scope="col">User</th>
-        <th scope="col">Comment</th>
-        <th scope="col">Created</th>
+        <th scope="col"><%= sortable_column("id", "Comment ID") %></th>
+        <th scope="col"><%= sortable_column("title", "Post") %></th>
+        <th scope="col"><%= sortable_column("name", "Username") %></th>
+        <th scope="col"><%= sortable_column("body", "Comment") %></th>
+        <th scope="col"><%= sortable_column("created_at", "Created") %></th>
         <th scope="col">Actions</th>
       </tr>
     </thead>
@@ -18,8 +18,8 @@
       <% @comments.each do |comment| %>
         <tr>
           <th scope="row"><%= comment.id %></th>
-          <td><%= link_to comment.post.title.truncate(15), admin_post_path(comment.post) %></td>
-          <td><%= comment.user.name %></td>
+          <td><%= comment.post_title %></td>
+          <td><%= comment.author_name %></td>
           <td>
             <% if comment.body.is_a?(ActionText::RichText) %>
               <%= truncate(comment.body.to_plain_text, length: 50) %>

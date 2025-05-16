@@ -1,5 +1,16 @@
 class Admin::PostsController < Admin::AdminController
+  # Helper for sorting posts
+  helper Admin::SortableHelper
   before_action :set_post, only: [ :show, :edit, :update, :destroy ]
+
+  def index
+    super
+    sortable_columns = %w[id title views created_at feature active]
+    sort_column = sortable_columns.include?(params[:sort]) ? params[:sort] : "id"
+    sort_direction = params[:direction] == "asc" ? "asc" : "desc"
+    @posts = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
+  end
+
   def show
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)

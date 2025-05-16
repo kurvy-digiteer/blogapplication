@@ -1,0 +1,35 @@
+<%# Like button partial %>
+<div class="like-button" data-controller="like">
+
+  <% if user_signed_in? || customer_signed_in? %>
+    <% if post.liked_by?(current_liker) %>
+      <%= button_to post_like_path(post, post.likes.find_by(liker: current_liker)), 
+                    method: :delete,
+                    class: "like-button__button liked",
+                    data: { 
+                      action: "like#toggle",
+                      like_target: "button",
+                      post_id: post.id
+                    } do %>
+        <i class="fas fa-heart"></i>
+        <span class="like-count" data-like-target="count"><%= post.likes_count %></span>
+      <% end %>
+    <% else %>
+      <%= button_to post_likes_path(post),
+                    class: "like-button__button",
+                    data: { 
+                      action: "like#toggle",
+                      like_target: "button",
+                      post_id: post.id
+                    } do %>
+        <i class="far fa-heart"></i>
+        <span class="like-count" data-like-target="count"><%= post.likes_count %></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= link_to new_user_session_path, class: "like-button__button" do %>
+      <i class="far fa-heart"></i>
+      <span class="like-count"><%= post.likes_count %></span>
+    <% end %>
+  <% end %>
+</div> 

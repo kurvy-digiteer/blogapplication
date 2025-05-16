@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_14_073000) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_16_042046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -76,6 +76,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_073000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "likes", force: :cascade do |t|
+    t.bigint "post_id", null: false
+    t.string "liker_type", null: false
+    t.bigint "liker_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["liker_type", "liker_id"], name: "index_likes_on_liker"
+    t.index ["post_id", "liker_id", "liker_type"], name: "index_likes_on_post_id_and_liker_id_and_liker_type", unique: true
+    t.index ["post_id"], name: "index_likes_on_post_id"
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.datetime "created_at", null: false
@@ -100,7 +111,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_073000) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.integer "views", default: 0
-    t.integer "role", default: 1
+    t.integer "role", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -110,6 +121,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_14_073000) do
   add_foreign_key "comments", "customers"
   add_foreign_key "comments", "posts"
   add_foreign_key "comments", "users"
+  add_foreign_key "likes", "posts"
   add_foreign_key "posts", "customers"
   add_foreign_key "posts", "users"
 end

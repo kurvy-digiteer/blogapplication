@@ -10,9 +10,14 @@
         <strong>Post:</strong> <%= link_to @comment.post.title, admin_post_path(@comment.post) %>
       </div>
 
-      <div class="mb-3">
-        <strong>Author:</strong> <%= @comment.user.name %>
-      </div>
+     
+        <div class="mb-3">
+          <strong>Author:</strong>
+           <% if @comment.user %> <%= @comment.user.name %>
+               <% else %>
+               <%= @comment.customer.name %>
+               <% end %>
+        </div>
 
       <%= form_with(model: [:admin, @comment], local: true) do |f| %>
         <div class="form-group mb-3">

@@ -101,7 +101,7 @@ class FeaturedController < ApplicationController
 
   def authorize_user_or_customer!
     if user_signed_in?
-      unless current_user == @post.user || current_user.admin?
+      unless current_user == @post.user
         redirect_to featured_path, alert: "You are not authorized to perform this action."
       end
     elsif customer_signed_in?
