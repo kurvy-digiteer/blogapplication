@@ -19,6 +19,9 @@ gem "jbuilder"
 
 gem "flatpickr"
 
+gem "pagy", "~> 6.0.4"
+# gem "pagy-bootstrap"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

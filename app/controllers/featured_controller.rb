@@ -5,27 +5,33 @@ class FeaturedController < ApplicationController
 
   def index
     @filter = params[:filter]
-    @posts = Post.where(feature: true).includes(:user, :customer)
+    posts = Post.where(feature: true, active: true).includes(:user, :customer)
 
     case @filter
     when "today"
-      @posts = @posts.where(created_at: Date.today.all_day)
+      posts = posts.where(created_at: Date.today.all_day)
     when "this_week"
-      @posts = @posts.where(created_at: Date.today.all_week)
+      posts = posts.where(created_at: Date.today.all_week)
     when "this_month"
-      @posts = @posts.where(created_at: Date.today.all_month)
+      posts = posts.where(created_at: Date.today.all_month)
     end
 
     if params[:filter_date].present?
       begin
         date = Date.parse(params[:filter_date])
-        @posts = @posts.where(created_at: date.all_day)
+        posts = posts.where(created_at: date.all_day)
       rescue ArgumentError
         flash.now[:alert] = "Invalid date format"
       end
     end
 
-    @posts = @posts.order(created_at: :desc)
+    posts = posts.order(created_at: :desc)
+    begin
+      @pagy, @posts = pagy(posts, items: 5)
+    rescue Pagy::OverflowError
+      @pagy, @posts = pagy(posts, items: 5, page: 1)
+      flash.now[:alert] = "Page #{params[:page]} does not exist. Showing page 1 instead."
+    end
   end
 
   def show

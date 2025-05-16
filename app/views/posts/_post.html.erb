@@ -1,4 +1,4 @@
-<div id="<%= dom_id post %>">
+<div id="<%= dom_id post %>" class="bg-dark text-white p-3 rounded">
   
     <h2><%= post.title %></h2>
 
@@ -19,8 +19,38 @@
     <h6><%= pluralize(post.likes_count, "like") %></h6>
     <h6><%= pluralize(post.views, "view") %></h6>
 
-  <div>
-    <%= post.body %>
+  <div class="post-body">
+    <% trunc_length = 100 %>
+    <% plain_body = strip_tags(post.body.to_s) %>
+    <% is_truncated = plain_body.length > trunc_length %>
+    <span class="post-body-short">
+      <%= truncate(plain_body, length: trunc_length) %>
+      <% if is_truncated %>
+        <a href="#" class="read-more-link" onclick="showFullPostBody(this); return false;">Read more</a>
+      <% end %>
+    </span>
+    <span class="post-body-full" style="display: none;">
+      <%= plain_body %>
+      <a href="#" class="read-less-link" onclick="hideFullPostBody(this); return false;">Show less</a>
+    </span>
   </div>
+  
 
 </div>
+
+<!-- ! Script to show the full post body when the user clicks the read more link, working as intended-->
+<script>
+function showFullPostBody(link) {
+  var shortSpan = link.closest('.post-body-short');
+  var fullSpan = shortSpan.parentNode.querySelector('.post-body-full');
+  shortSpan.style.display = 'none';
+  fullSpan.style.display = '';
+}
+
+function hideFullPostBody(link) {
+  var fullSpan = link.closest('.post-body-full');
+  var shortSpan = fullSpan.parentNode.querySelector('.post-body-short');
+  fullSpan.style.display = 'none';
+  shortSpan.style.display = '';
+}
+</script>

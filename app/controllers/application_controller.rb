@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  include Pagy::Backend
+require "pagy/extras/bootstrap" # For Bootstrap navs
+
   before_action :set_query
   helper_method :current_liker
 
