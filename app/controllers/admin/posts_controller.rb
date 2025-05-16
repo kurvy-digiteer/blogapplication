@@ -1,6 +1,5 @@
 class Admin::PostsController < Admin::AdminController
   # Helper for sorting posts
-  helper Admin::SortableHelper
   before_action :set_post, only: [ :show, :edit, :update, :destroy ]
 
   def index
@@ -8,7 +7,7 @@ class Admin::PostsController < Admin::AdminController
     sortable_columns = %w[id title views likes_count created_at feature active]
     sort_column = sortable_columns.include?(params[:sort]) ? params[:sort] : "id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
-    @posts = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
+    @pagy, @posts = pagy(Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}"), items: 10)
   end
 
   def show

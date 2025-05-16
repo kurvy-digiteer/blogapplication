@@ -1,4 +1,5 @@
 class Admin::AdminController < ApplicationController
+  include Admin::SortableHelper
   before_action :authenticate_user!
   before_action :require_admin
 
@@ -22,7 +23,7 @@ class Admin::AdminController < ApplicationController
   private
 
   def authenticate_user_or_customer!
-    unless user_signed_in? 
+    unless user_signed_in?
       redirect_to new_user_session_path, alert: "Please sign in to continue."
     end
   end

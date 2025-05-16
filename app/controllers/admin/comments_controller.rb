@@ -1,5 +1,4 @@
 class Admin::CommentsController < Admin::AdminController
-  helper Admin::SortableHelper
   before_action :set_comment, only: [ :edit, :update, :destroy ]
 
   def index
@@ -14,7 +13,7 @@ class Admin::CommentsController < Admin::AdminController
     sort_column = sortable_columns[sort_param] || "comments.id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
 
-    @comments = Comment
+    comments = Comment
       .left_joins(:post)
       .left_joins(:user)
       .left_joins(:customer)
@@ -22,6 +21,8 @@ class Admin::CommentsController < Admin::AdminController
         AND action_text_rich_texts.record_id = comments.id AND action_text_rich_texts.name = 'body'")
       .select("comments.*, posts.title as post_title, COALESCE(users.name, customers.name) as author_name")
       .order(Arel.sql("#{sort_column} #{sort_direction}"))
+
+    @pagy, @comments = pagy(comments, items: 10)
   end
 
   def edit
