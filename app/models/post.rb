@@ -13,10 +13,6 @@ class Post < ApplicationRecord
     # For ransack search
     has_one :content, class_name: "ActionText::RichText", as: :record, dependent: :destroy
 
-    def likes_count
-        likes.count
-    end
-
     def liked_by?(liker)
         likes.exists?(liker: liker)
     end
@@ -27,7 +23,7 @@ class Post < ApplicationRecord
   }
 
     def self.ransackable_attributes(auth_object = nil)
-        [ "title", "body", "created_at", "updated_at", "user_id", "customer_id", "views" ]
+        [ "title", "body", "created_at", "updated_at", "user_id", "customer_id", "views", "likes_count" ]
     end
 
     def self.ransackable_associations(auth_object = nil)

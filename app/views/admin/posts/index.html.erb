@@ -8,8 +8,9 @@
         <th scope="col"><%= sortable_column("id", "ID") %></th>
         <th scope="col"><%= sortable_column("title", "Post") %></th>
         <th scope="col"><%= sortable_column("user_name", "Author") %></th>
-        <th scope="col"><%= sortable_column("comments_count", "Comments") %></th>
+        <th scope="col">Comments</th>
         <th scope="col"><%= sortable_column("views", "Views") %></th>
+        <th scope="col"><%= sortable_column("likes_count", "Likes") %></th>
         <th scope="col"><%= sortable_column("created_at", "Post date") %></th>
         <th scope="col"><%= sortable_column("feature", "Featured") %></th>
         <th scope="col"><%= sortable_column("active", "Active") %></th>
@@ -29,6 +30,7 @@
           <% end %>
           <td><%= pluralize(post.comments.count, "Comment") %></td>
           <td><%= pluralize(post.views, "View") %></td>
+          <td><%= pluralize(post.likes_count, "Like") %></td>
           <td><%= post.created_at.strftime("%B %d, %Y") %></td>
           <td><%= post.feature ? "Yes" : "No" %></td>
           <td><%= post.active ? "Yes" : "No" %></td>

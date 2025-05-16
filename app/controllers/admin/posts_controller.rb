@@ -5,7 +5,7 @@ class Admin::PostsController < Admin::AdminController
 
   def index
     super
-    sortable_columns = %w[id title views created_at feature active]
+    sortable_columns = %w[id title views likes_count created_at feature active]
     sort_column = sortable_columns.include?(params[:sort]) ? params[:sort] : "id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
     @posts = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
