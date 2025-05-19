@@ -8,3 +8,13 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* OCD just fixing the all time button to be aligned properly */
+.pagy-bootstrap-nav .pagination {
+  margin-bottom: 0 !important;
+}
+.btn-outline-primary {
+  height: 38px; /* match Bootstrap .pagination height */
+  display: flex;
+  align-items: center;
+}

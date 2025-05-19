@@ -2,18 +2,18 @@
   h1.text-center Admin Dashboard
   = render "admin/nav_links"
 
-  .row.mb-4 data-controller="calendar"
+  .row.mb-4
     .col-md-12
       h5 Filter by date:
       .d-flex.align-items-center.gap-3
-        = link_to "All Time", 
-          admin_posts_path(params.permit(:sort, :direction).merge(all_time: true)), 
-          class: "btn btn-outline-primary #{'active' if params[:all_time]}",
-          data: { calendar_target: "allTime", action: "click->calendar#toggleAllTime" }
+        .d-flex.align-items-center
+          = link_to "All Time", 
+            admin_posts_path(params.permit(:sort, :direction).merge(all_time: params[:all_time] ? nil : true)), 
+            class: "btn btn-outline-primary #{'active' if params[:all_time]}"
         - if @pagy_calendar
-          .d-flex.align-items-center data-calendar-target="yearNav"
+          .d-flex.align-items-center
             == pagy_bootstrap_nav(@pagy_calendar[:year], link_extra: "data-turbo-frame='_top'")
-          .d-flex.align-items-center data-calendar-target="monthNav"
+          .d-flex.align-items-center
             == pagy_bootstrap_nav(@pagy_calendar[:month], link_extra: "data-turbo-frame='_top'")
 
   table.table.table-dark.table-striped data-calendar-target="postsTable"

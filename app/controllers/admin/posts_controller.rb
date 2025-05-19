@@ -19,13 +19,6 @@ class Admin::PostsController < Admin::AdminController
       # Pagy calendar for month navigation
       calendar_params = params.slice(:year, :month, :quarter, :week, :day).to_unsafe_h.symbolize_keys
 
-      # Set period to show all posts when no date is selected
-      period = if calendar_params[:year].blank? && calendar_params[:month].blank?
-        [ Time.current.beginning_of_year, Time.current.end_of_year ]
-      else
-        pagy_calendar_period(posts_scope)
-      end
-
       # Configure calendar options
       calendar_options = {
         year: {
@@ -109,11 +102,6 @@ class Admin::PostsController < Admin::AdminController
   end
 
   # Required by pagy_calendar
-  def pagy_calendar_filter(collection, from, to)
-    collection.where(created_at: from...to)  # 3-dots range excluding the end value
-  end
-
-  # Required by pagy_calendar
   def pagy_calendar_period(collection)
     # Get the first and last post dates
     first_post = collection.reorder(:created_at).first
@@ -122,6 +110,11 @@ class Admin::PostsController < Admin::AdminController
     return [ Time.current.beginning_of_month, Time.current.end_of_month ] unless first_post && last_post
 
     [ first_post.created_at.beginning_of_month, last_post.created_at.end_of_month ]
+  end
+
+  # Required by pagy_calendar
+  def pagy_calendar_filter(collection, from, to)
+    collection.where(created_at: from...to)  # 3-dots range excluding the end value
   end
 
   def calendar_view?
