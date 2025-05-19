@@ -1,0 +1,27 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  table.table.table-dark.table-striped
+    thead
+      tr
+        th scope="col" = sortable_column("id", "ID")
+        th scope="col" = sortable_column("name", "Name")
+        th scope="col" = sortable_column("email", "Email")
+        th scope="col" = sortable_column("posts_count", "Posts")
+        th scope="col" = sortable_column("comments_count", "Comments")
+        th scope="col" = sortable_column("created_at", "Date Created")
+        th scope="col" Actions
+    tbody
+      - @customers.each do |customer|
+        tr
+          th scope="row" = customer.id
+          td = customer.name
+          td = customer.email
+          td = pluralize(customer.posts.count, "Post")
+          td = pluralize(customer.comments.count, "Comment")
+          td = customer.created_at.strftime("%B %d, %Y")
+          td
+            = link_to "Edit", edit_admin_customer_path(customer), class: "btn btn-warning btn-sm"
+            = button_to "Delete", admin_customer_path(customer), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure you want to delete this customer? This will also delete all their posts and comments." } }
+  = pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 

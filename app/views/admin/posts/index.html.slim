@@ -1,0 +1,53 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  .row.mb-4
+    .col-md-12
+      h5 Filter by date:
+      == pagy_calendar_nav(@pagy_calendar)
+
+  h4.mb-3
+    | Posts for 
+    - if params[:month].present? && params[:month] =~ /^\d{4}-\d{2}$/
+      = Date.strptime(params[:month], "%Y-%m").strftime("%B %Y")
+    - elsif params[:year].present?
+      = params[:year]
+    - else
+      | All Time
+
+  table.table.table-dark.table-striped
+    thead
+      tr
+        th scope="col" = sortable_column("id", "ID")
+        th scope="col" = sortable_column("title", "Post")
+        th scope="col" = sortable_column("user_name", "Author")
+        th scope="col" Comments
+        th scope="col" = sortable_column("views", "Views")
+        th scope="col" = sortable_column("likes_count", "Likes")
+        th scope="col" = sortable_column("created_at", "Post date")
+        th scope="col" = sortable_column("feature", "Featured")
+        th scope="col" = sortable_column("active", "Active")
+        th scope="col" Actions
+
+    tbody
+      - @posts.each do |post|
+        tr
+          th scope="row" = post.id
+          td = post.title.truncate(15)
+          - if post.user.present?
+            td = post.user.name
+          - elsif post.customer.present?
+            td = post.customer.name
+          td = pluralize(post.comments.count, "Comment")
+          td = pluralize(post.views, "View")
+          td = pluralize(post.likes_count, "Like")
+          td = post.created_at.strftime("%B %d, %Y")
+          td = post.feature ? "Yes" : "No"
+          td = post.active ? "Yes" : "No"
+          td
+            = link_to "View", admin_post_path(post), class: "btn btn-primary btn-sm"
+            = button_to "Delete", admin_post_path(post), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } }
+
+  == pagy_info(@pagy)
+  == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 

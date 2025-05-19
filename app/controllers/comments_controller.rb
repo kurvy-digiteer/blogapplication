@@ -12,10 +12,10 @@ class CommentsController < ApplicationController
 
         if @comment.save
             flash[:notice] = "Your comment has been created"
-            redirect_to post_path(@post)
+            redirect_to parent_post_path(@post)
         else
             flash[:alert] = "YOUR COMMENT WAS NOT CREATED"
-            redirect_to post_path(@post)
+            redirect_to parent_post_path(@post)
         end
     end
 
@@ -23,39 +23,39 @@ class CommentsController < ApplicationController
         @comment = @post.comments.find(params[:id])
         if user_signed_in?
             unless current_user == @comment.user || current_user.admin?
-                redirect_to post_path(@post), alert: "You are not authorized to perform this action."
+                redirect_to parent_post_path(@post), alert: "You are not authorized to perform this action."
                 return
             end
         elsif customer_signed_in?
             unless current_customer == @comment.customer
-                redirect_to post_path(@post), alert: "You are not authorized to perform this action."
+                redirect_to parent_post_path(@post), alert: "You are not authorized to perform this action."
                 return
             end
         end
 
         @comment.destroy
-        redirect_to post_path(@post)
+        redirect_to parent_post_path(@post)
     end
 
     def update
         @comment = @post.comments.find(params[:id])
         if user_signed_in?
             unless current_user == @comment.user || current_user.admin?
-                redirect_to post_path(@post), alert: "You are not authorized to perform this action."
+                redirect_to parent_post_path(@post), alert: "You are not authorized to perform this action."
                 return
             end
         elsif customer_signed_in?
             unless current_customer == @comment.customer
-                redirect_to post_path(@post), alert: "You are not authorized to perform this action."
+                redirect_to parent_post_path(@post), alert: "You are not authorized to perform this action."
                 return
             end
         end
 
         respond_to do |format|
             if @comment.update(comment_params)
-                format.html { redirect_to post_url(@post), notice: "Comment has been updated!" }
+                format.html { redirect_to parent_post_path(@post), notice: "Comment has been updated!" }
             else
-                format.html { redirect_to post_url(@post), alert: "Comment WAS NOT updated!" }
+                format.html { redirect_to parent_post_path(@post), alert: "Comment WAS NOT updated!" }
             end
         end
     end
@@ -69,7 +69,15 @@ class CommentsController < ApplicationController
     end
 
     def set_post
-        @post = Post.find(params[:post_id])
+        if params[:post_id]
+            @post = Post.find(params[:post_id])
+        elsif params[:featured_id]
+            @post = Post.find(params[:featured_id])
+        end
+    end
+
+    def parent_post_path(post)
+        post.feature? ? featured_path(post) : post_path(post)
     end
 
     def comment_params

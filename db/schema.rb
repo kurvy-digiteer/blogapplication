@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_16_060931) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_19_063907) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,6 +97,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_16_060931) do
     t.boolean "feature"
     t.integer "customer_id"
     t.integer "likes_count", default: 0, null: false
+    t.index "lower((title)::text)", name: "index_posts_on_lower_title", unique: true
     t.index ["customer_id"], name: "index_posts_on_customer_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
     t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present"

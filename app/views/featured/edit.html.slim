@@ -1,0 +1,10 @@
+- content_for :title, "Editing featured post"
+
+.container
+  h1.mb-4 Editing featured post
+
+  = render "form", post: @post
+
+  .mt-4
+    = link_to "Show this post", @post, class: "btn btn-info me-2"
+    = link_to "Back to featured posts", featured_index_path, class: "btn btn-secondary"

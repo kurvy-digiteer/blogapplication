@@ -1,0 +1,19 @@
+.container
+  h1 Personal Home Page
+  
+  - if current_user
+    - if current_user.user?
+      p Hello #{current_user.name}
+      p You are a [#{current_user.role_name}]
+    - if current_user.admin?
+      p Hello #{current_user.name}
+      p You are an [#{current_user.role_name}]
+      p There are #{pluralize(User.count, "user")} and #{pluralize(Customer.count, "customer")} in the website.
+  - elsif current_customer
+    p Hello #{current_customer.name}!
+    p You are a customer!
+  - else
+    p Welcome, guest! Please #{link_to "sign in", new_customer_session_path} or #{link_to "sign up", new_customer_registration_path}.
+  
+  p Read more about me! Or check the rest of the site
+  = link_to "Blog/Posts", posts_path, class: "btn btn-primary"

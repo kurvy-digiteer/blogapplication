@@ -1,0 +1,63 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  .card.bg-dark.text-white.mt-4
+    .card-body
+      .d-flex.justify-content-between.align-items-center.mb-3
+        h2.card-title = @post.title
+        div
+          = link_to "Edit Post", edit_admin_post_path(@post), class: "btn btn-warning"
+          = button_to "Delete", admin_post_path(@post), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } }
+
+      .mb-3
+        - if @post.user.present?
+          strong Author: 
+          = @post.user.name
+        - elsif @post.customer.present?
+          strong Author: 
+          = @post.customer.name
+
+      .mb-3
+        strong Created: 
+        = @post.created_at.strftime("%B %d, %Y")
+
+      .mb-3
+        strong Views: 
+        = @post.views
+
+      .mb-3
+        strong Featured: 
+        = @post.feature ? "Yes" : "No"
+
+      .mb-3
+        strong Active: 
+        = @post.active ? "Yes" : "No"
+
+      .mb-4
+        h4 Content:
+        .bg-dark.p-3.rounded
+          = @post.body
+
+      .mb-4
+        h4 Comments (#{@comments.count})
+        .table-responsive
+          table.table.table-dark.table-striped
+            thead
+              tr
+                th User
+                th Comment
+                th Created
+                th Actions
+            tbody
+              - @comments.each do |comment|
+                tr
+                  - if comment.user.present?
+                    td = comment.user.name
+                  - elsif comment.customer.present?
+                    td = comment.customer.name
+                  td = comment.body.to_plain_text.truncate(50)
+                  td = time_ago_in_words(comment.created_at) + " ago"
+                  td
+                    = link_to "Edit", edit_admin_comment_path(comment), class: "btn btn-warning btn-sm"
+                    = button_to "Delete", admin_comment_path(comment), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure?" } } 

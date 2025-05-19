@@ -1,0 +1,22 @@
+nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+  .container-fluid
+    span.navbar-brand Rails-based Blog
+    button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+      span.navbar-toggler-icon
+    .collapse.navbar-collapse#navbarSupportedContent
+      ul.navbar-nav.me-auto.mb-2.mb-lg-0
+        li.nav-item
+          = link_to "Home", root_path, class: "nav-link"
+        - if current_user
+          li.nav-item
+            = link_to "About", user_path(current_user), class: "nav-link"
+        - elsif current_customer
+          li.nav-item
+            = link_to "About", customer_path(current_customer), class: "nav-link"
+        li.nav-item
+          = link_to "Posts", posts_path, class: "nav-link"
+        li.nav-item
+          = link_to "Featured", featured_index_path, class: "nav-link"
+      ul.navbar-nav
+        = render 'search/form'
+        = render 'user/session_manager' 

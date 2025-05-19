@@ -1,0 +1,34 @@
+- content_for :title, "Posts"
+
+.container
+  h1.mb-4 Posts
+
+  .row.mb-4.d-flex.align-items-end
+    .col-md-6
+      - filter_options = [["All", ""], ["Today", "today"], ["This Week", "this_week"], ["This Month", "this_month"]]
+      = form_with url: posts_path, method: :get, local: true, class: "mb-0" do
+        .mb-0
+          label.form-label.me-2 for="filter" Show posts:
+          = select_tag :filter, options_for_select(filter_options, params[:filter]), class: "form-select d-inline-block w-auto", onchange: "this.form.submit();"
+    .col-md-6
+      = form_with url: posts_path, method: :get, local: true, class: "mb-0 d-flex align-items-end" do
+        label.form-label.me-2 for="filter_date" Filter by date:
+        = text_field_tag :filter_date, params[:filter_date], class: "form-control d-inline-block w-auto datepicker", id: "datepicker", autocomplete: "off"
+
+  .mb-4
+    = link_to "New post", new_post_path, class: "btn btn-primary"
+
+  #posts
+    - @posts.each do |post|
+      - if post.feature
+        = render "featured/post", post: post
+      - else
+        = render "posts/post", post: post
+      p
+      - if post.feature
+        = link_to "Show this post", featured_path(post), class: "btn btn-info btn-sm"
+      - else
+        = link_to "Show this post", post, class: "btn btn-info btn-sm"
+
+  - if @pagy.pages > 1
+    == pagy_bootstrap_nav(@pagy) 

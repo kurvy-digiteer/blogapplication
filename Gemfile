@@ -69,3 +69,4 @@ end
 
 gem 'devise'
 gem "ransack", "~> 4.3"
+gem 'slim-rails'

@@ -1,5 +1,5 @@
 class Post < ApplicationRecord
-    validates :title, presence: true, uniqueness: true, length: { minimum: 5, maximum: 255 }
+    validates :title, presence: true, uniqueness: { case_sensitive: false }, length: { minimum: 5, maximum: 255 }
     validates :body, presence: true, length: { minimum: 10, maximum: 1500 }
     validate :user_or_customer_present
 

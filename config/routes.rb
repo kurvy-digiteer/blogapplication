@@ -2,9 +2,11 @@ Rails.application.routes.draw do
   # METHOD NAME: get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
   # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
-  get "featured", to: "featured#index", as: :featured
+  get "featured", to: "featured#index", as: :featured_index
   # Read as featured_path if you wanna access the index page of the /featured folder
-  resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ]
+  resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ], path: "featured" do
+    resources :comments, only: [ :create, :update, :destroy ], module: nil
+  end
     # authenticated :user, ->(user) { user.admin? } do
     # Admin authentication routes WIP
 

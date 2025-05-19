@@ -1,0 +1,50 @@
+- content_for :title, "Edit Post (Admin)"
+
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  h2.card-title.mb-4 Edit Post
+
+  .mb-3
+    strong Author:
+    - if @post.user
+      = @post.user.name
+    - else
+      = @post.customer.name
+
+  .mb-3
+    strong Created: 
+    = @post.created_at.strftime("%B %d, %Y")
+
+  .mb-3
+    strong Views: 
+    = @post.views
+
+  = form_with(model: @post, url: admin_post_path(@post)) do |form|
+    - if @post.errors.any?
+      .alert.alert-danger
+        h2 = pluralize(@post.errors.count, "error") + " prohibited this post from being saved:"
+        ul
+          - @post.errors.each do |error|
+            li = error.full_message
+
+    .field
+      = form.label :title, style: "display: block"
+      = form.text_field :title
+
+    .field
+      = form.label :body, style: "display: block"
+      = form.rich_text_area :body
+
+    .form-check.mb-3
+      = form.check_box :active, class: "form-check-input"
+      = form.label :active, "Active", class: "form-check-label"
+
+    .form-check.mb-3
+      = form.check_box :feature, class: "form-check-input"
+      = form.label :feature, "Featured", class: "form-check-label"
+
+    .d-flex.gap-2
+      = form.submit "Update Post", class: "btn btn-primary"
+      = link_to "Cancel", admin_post_path(@post), class: "btn btn-secondary" 

@@ -1,0 +1,29 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  table.table.table-dark.table-striped
+    thead
+      tr
+        th scope="col" = sortable_column("id", "ID")
+        th scope="col" = sortable_column("name", "Name")
+        th scope="col" = sortable_column("email", "Email")
+        th scope="col" = sortable_column("posts_count", "Posts")
+        th scope="col" = sortable_column("comments_count", "Comments")
+        th scope="col" = sortable_column("role", "Role")
+        th scope="col" = sortable_column("created_at", "Date Created")
+        th scope="col" Actions
+    tbody
+      - @users.each do |user|
+        tr
+          th scope="row" = user.id
+          td = user.name
+          td = user.email
+          td = pluralize(user.posts.count, "Post")
+          td = pluralize(user.comments.count, "Comment")
+          td = user.role_name.titleize
+          td = user.created_at.strftime("%B %d, %Y")
+          td
+            = link_to "Edit", edit_admin_user_path(user), class: "btn btn-warning btn-sm"
+            = button_to "Delete", admin_user_path(user), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure you want to delete this user? This will also delete all their posts and comments." } }
+  = pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 
