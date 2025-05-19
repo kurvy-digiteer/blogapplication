@@ -10,28 +10,51 @@ class Admin::PostsController < Admin::AdminController
 
     posts_scope = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
 
-    # Filter posts by selected period
-    if params[:year] && params[:month]
-      from = Date.new(params[:year].to_i, params[:month].to_i, 1)
-      to = from.end_of_month
-      posts_scope = posts_scope.where(created_at: from..to)
-    elsif params[:year]
-      from = Date.new(params[:year].to_i, 1, 1)
-      to = from.end_of_year
-      posts_scope = posts_scope.where(created_at: from..to)
-    end
-
-    # Pagy calendar for month navigation (after filtering)
+    # Pagy calendar for month navigation
     calendar_params = params.slice(:year, :month, :quarter, :week, :day).to_unsafe_h.symbolize_keys
-    if calendar_params.empty?
-      @pagy_calendar, @calendar =
-        pagy_calendar({ month: { collection: posts_scope, link_extra: 'class="btn btn-outline-primary mx-1"' } })
-    else
-      @pagy_calendar, @calendar =
-        pagy_calendar({ month: { collection: posts_scope, link_extra: 'class="btn btn-outline-primary mx-1"' } }, calendar_params)
-    end
+    period = pagy_calendar_period(posts_scope)
 
-    @pagy, @posts = pagy(posts_scope, items: 10)
+    # Configure calendar options
+    calendar_options = {
+      year: {
+        format: "%Y",
+        link_extra: 'class="btn btn-outline-primary mx-1"'
+      },
+      month: {
+        format: "%B",
+        link_extra: 'class="btn btn-outline-primary mx-1"',
+        order: :desc
+      }
+    }
+
+    # Apply date filtering if calendar parameters are present
+    if calendar_params[:year].present? || calendar_params[:month].present?
+      if calendar_params[:year] && calendar_params[:month]
+        from = Date.new(calendar_params[:year].to_i, calendar_params[:month].to_i, 1)
+        to = from.end_of_month
+        posts_scope = posts_scope.where(created_at: from..to)
+      elsif calendar_params[:year]
+        from = Date.new(calendar_params[:year].to_i, 1, 1)
+        to = from.end_of_year
+        posts_scope = posts_scope.where(created_at: from..to)
+      end
+
+      # Use calendar pagination for filtered view
+      @pagy_calendar, @pagy, @posts = pagy_calendar(
+        posts_scope,
+        **calendar_options,
+        pagy: { items: 10 }
+      )
+    else
+      # Use regular pagination for All Time view
+      @pagy, @posts = pagy(posts_scope, items: 10)
+
+      # Create calendar for navigation without filtering
+      @pagy_calendar, = pagy_calendar(
+        posts_scope,
+        **calendar_options
+      )
+    end
   end
 
   def show
@@ -100,12 +123,12 @@ class Admin::PostsController < Admin::AdminController
   # Define the calendar period for posts (required by Pagy calendar extra)
   def pagy_calendar_period(collection)
     unless collection.respond_to?(:reorder)
-      return [ Date.today.beginning_of_month, Date.today.end_of_month ]
+      return [ Time.current.beginning_of_month, Time.current.end_of_month ]
     end
     first_post = collection.reorder(:created_at).first
     last_post = collection.reorder(created_at: :desc).first
 
-    return [ Date.today.beginning_of_month, Date.today.end_of_month ] unless first_post && last_post
+    return [ Time.current.beginning_of_month, Time.current.end_of_month ] unless first_post && last_post
 
     [ first_post.created_at.beginning_of_month, last_post.created_at.end_of_month ]
   end

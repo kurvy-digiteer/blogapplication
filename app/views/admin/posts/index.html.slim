@@ -5,16 +5,13 @@
   .row.mb-4
     .col-md-12
       h5 Filter by date:
-      == pagy_calendar_nav(@pagy_calendar)
+      .d-flex.align-items-center.gap-3
+        = link_to "All Time", admin_posts_path, class: "btn btn-outline-primary"
+        .d-flex.align-items-center
+          == pagy_bootstrap_nav(@pagy_calendar[:year])
+        .d-flex.align-items-center
+          == pagy_bootstrap_nav(@pagy_calendar[:month])
 
-  h4.mb-3
-    | Posts for 
-    - if params[:month].present? && params[:month] =~ /^\d{4}-\d{2}$/
-      = Date.strptime(params[:month], "%Y-%m").strftime("%B %Y")
-    - elsif params[:year].present?
-      = params[:year]
-    - else
-      | All Time
 
   table.table.table-dark.table-striped
     thead

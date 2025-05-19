@@ -35,7 +35,8 @@ Customer.create(email: "dante@example.com",
 
 # Create 5 posts by the customer
 5.times do |x|
-    Post.create(title: "Customer Post #{x + 1}",
+    Post.create(
+        title: "Customer Post #{x + 1}",
         body: "This is post #{x + 1} by a customer. The quick brown fox jumps over the lazy dog",
         customer_id: Customer.first.id,
         active: true,
@@ -45,9 +46,9 @@ end
 # Create 4 featured posts by admin users
 dates = [
     DateTime.new(2025, 1, 15, 10, 0, 0), # January 15, 2025
-    DateTime.new(2025, 2, 20, 12, 0, 0), # February 20, 2025
-    DateTime.new(2025, 3, 10, 14, 0, 0), # March 10, 2025
-    DateTime.new(2025, 4, 5, 16, 0, 0)   # April 5, 2025
+    DateTime.new(2024, 2, 20, 12, 0, 0), # February 20, 2024
+    DateTime.new(2023, 3, 10, 14, 0, 0), # March 10, 2023
+    DateTime.new(2022, 4, 5, 16, 0, 0)   # April 5, 2022
 ]
 
 dates.each_with_index do |date, i|
