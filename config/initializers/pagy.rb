@@ -4,6 +4,7 @@
 # Customize only what you really need and notice that the core Pagy works also without any of the following lines.
 # Should you just cherry pick part of this file, please maintain the require-order of the extras
 
+require "pagy/extras/calendar"  # Must be required before bootstrap
 require "pagy/extras/bootstrap"
 require "pagy/extras/overflow"
 
@@ -15,6 +16,11 @@ require "pagy/extras/overflow"
 Pagy::DEFAULT[:items] = 5
 Pagy::DEFAULT[:size]  = [ 1, 2, 2, 1 ]
 Pagy::DEFAULT[:overflow] = :last_page
+
+# Calendar configuration
+Pagy::Calendar::Month::DEFAULT[:format] = "%Y-%m"
+Pagy::Calendar::Month::DEFAULT[:order] = :desc
+Pagy::Calendar::Month::DEFAULT[:first_day] = Date.today.beginning_of_month
 
 # Extras
 # See https://ddnexus.github.io/pagy/categories/extra

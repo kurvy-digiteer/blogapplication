@@ -1,7 +1,8 @@
 class Admin::AdminController < ApplicationController
   include Admin::SortableHelper
+
   before_action :authenticate_user!
-  before_action :require_admin
+  before_action :authorize_admin!
 
   def index
     @posts = Post.includes(:user, :customer, :comments).order(created_at: :desc)
@@ -28,7 +29,7 @@ class Admin::AdminController < ApplicationController
     end
   end
 
-  def require_admin
+  def authorize_admin!
     unless current_user&.admin?
       redirect_to root_path, alert: "You are not authorized to access this area."
     end

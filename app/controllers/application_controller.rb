@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
+  require "pagy/extras/calendar"  # Must be required before including
+  require "pagy/extras/bootstrap" # For Bootstrap navs
+
   include Pagy::Backend
-require "pagy/extras/bootstrap" # For Bootstrap navs
 
   before_action :set_query
   helper_method :current_liker

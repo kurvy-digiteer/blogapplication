@@ -2,6 +2,43 @@
   <h1 class="text-center">Admin Dashboard</h1>
   <%= render "admin/nav_links" %>
 
+  <div class="row mb-4">
+
+    <div class="col-md-6">
+      <h5>Filter by year:</h5>
+      <div class="btn-group" role="group">
+        <%= link_to "Any", admin_posts_path, class: "btn btn-outline-primary #{params[:year].blank? ? 'active' : ''}" %>
+        <% (2021..2025).reverse_each do |year| %>
+          <%= link_to year, admin_posts_path(year: year), class: "btn btn-outline-primary #{params[:year].to_i == year ? 'active' : ''}" %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <h5>Filter by month:</h5>
+      <div class="btn-group flex-wrap overflow-auto" role="group" style="max-width:100%;white-space:nowrap;">
+        <%= link_to "Any", admin_posts_path(year: params[:year]), class: "btn btn-outline-primary #{params[:month].blank? ? 'active' : ''}" %>
+        <% display_year = params[:year].present? ? params[:year].to_i : Date.today.year %>
+        <% (1..12).each do |month| %>
+          <% month_str = "%04d-%02d" % [display_year, month] %>
+          <%= link_to Date::MONTHNAMES[month], admin_posts_path(year: display_year, month: month_str), class: "btn btn-outline-primary #{params[:month] == month_str ? 'active' : ''}" %>
+        <% end %>
+      </div>
+    </div>
+    
+  </div>
+
+  <h4 class="mb-3">
+    Posts for 
+    <% if params[:month].present? && params[:month] =~ /^\d{4}-\d{2}$/ %>
+      <%= Date.strptime(params[:month], "%Y-%m").strftime("%B %Y") %>
+    <% elsif params[:year].present? %>
+      <%= params[:year] %>
+    <% else %>
+      All Time
+    <% end %>
+  </h4>
+
   <table class="table table-dark table-striped">
     <thead>
       <tr>
@@ -42,5 +79,6 @@
       <% end %>
     </tbody>
   </table>
+  <%== pagy_info(@pagy) %>
   <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
 </div> 
