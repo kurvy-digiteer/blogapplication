@@ -58,6 +58,7 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
+        # No turbo stream here since it is redirecting to a different page
         format.html { redirect_to posts_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else

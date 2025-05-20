@@ -15,7 +15,7 @@ class CommentsController < ApplicationController
                 format.turbo_stream do
                     render turbo_stream: [
                         turbo_stream.update("new_comment", partial: "comments/form", locals: { post: @post, comment: @post.comments.build, submit_label: "Reply" }),
-                        turbo_stream.update("comments", partial: "comments/comments", locals: { comments: @post.comments, post: @post }),
+                        turbo_stream.prepend("comments", partial: "comments/comments", locals: { comments: @post.comments, post: @post }),
                         turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Your comment has been created" })
                     ]
                 end

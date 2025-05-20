@@ -21,7 +21,7 @@
 
     h3 Post a comment
   .container
-    = turbo_frame_tag "new_comment", data: { controller: "comment-form" } do
+    = turbo_frame_tag "new_comment" do
       = render "comments/form", 
         post: @post, 
         comment: @post.comments.build,
