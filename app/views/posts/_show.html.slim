@@ -1,29 +1,30 @@
-= turbo_frame_tag dom_id(@post) do
+= turbo_frame_tag dom_id(post) do
   .container
     .post-edit-container data-controller="post-edit"
       .post-display data-post-edit-target="display"
-        = render "posts/post", post: @post
+        = render "posts/post", post: post
         .post-actions.mb-4
-          = render "likes/like_button", post: @post
-          - if user_signed_in? && (@post.user_id == current_user.id)
+          = render "likes/like_button", post: post
+          - if user_signed_in? && (post.user_id == current_user.id)
             = button_tag "Edit this post", type: "button", class: "btn btn-primary me-2", data: { action: "post-edit#showForm" }
 
-          - elsif customer_signed_in? && @post.customer_id == current_customer.id
+          - elsif customer_signed_in? && post.customer_id == current_customer.id
             = button_tag "Edit this post", type: "button", class: "btn btn-primary me-2", data: { action: "post-edit#showForm" }
 
-          = button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger me-2" if user_signed_in? && (@post.user_id == current_user.id)
+          = button_to "Destroy this post", post, method: :delete, class: "btn btn-danger me-2" if user_signed_in? && (post.user_id == current_user.id)
           = link_to "Back to posts", posts_path, class: "btn btn-secondary"
 
       .post-form.d-none data-post-edit-target="form"
-        = render "posts/form", post: @post
+        = render "posts/form", post: post
         = button_tag "Cancel", type: "button", class: "btn btn-secondary mt-2", data: { action: "post-edit#hideForm" }
 
   .container
-    = render "comments/form", 
-      post: @post, 
-      comment: @post.comments.build,
-      submit_label: "Reply"
-    - comments.each do |comment|
-      = render "comments/comment", 
-        post: @post, 
-        comment: comment 
+    h3 Post a comment
+    = turbo_frame_tag "new_comment", data: { controller: "comment-form" } do
+      = render "comments/form", 
+        post: post, 
+        comment: post.comments.build,
+        submit_label: "Reply"
+    h3 Comments
+    = turbo_frame_tag "comments" do
+      = render "comments/comments", comments: comments, post: post 

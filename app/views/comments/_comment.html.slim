@@ -5,9 +5,9 @@
         .d-flex.justify-content-between.align-items-start
           .comment-meta
             - if comment.user
-              = comment.user.email
+              = comment.user.name
             - else
-              = comment.customer.email
+              = comment.customer.name
 
             .text-muted.small
               - if (comment.updated_at - comment.created_at) > 1

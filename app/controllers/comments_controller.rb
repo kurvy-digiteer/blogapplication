@@ -14,7 +14,8 @@ class CommentsController < ApplicationController
             if @comment.save
                 format.turbo_stream do
                     render turbo_stream: [
-                        turbo_stream.replace("comments", partial: "comments/comments", locals: { post: @post, comments: @post.comments.order(created_at: :desc) }),
+                        turbo_stream.update("new_comment", partial: "comments/form", locals: { post: @post, comment: @post.comments.build, submit_label: "Reply" }),
+                        turbo_stream.update("comments", partial: "comments/comments", locals: { comments: @post.comments, post: @post }),
                         turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Your comment has been created" })
                     ]
                 end
@@ -43,7 +44,15 @@ class CommentsController < ApplicationController
         end
 
         @comment.destroy
-        redirect_to parent_post_path(@post)
+        respond_to do |format|
+            format.turbo_stream do
+                render turbo_stream: [
+                turbo_stream.remove(view_context.dom_id(@comment)),
+                turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Your comment has been deleted" })
+                ]
+            end
+            format.html { redirect_to parent_post_path(@post) }
+        end
     end
 
     def update

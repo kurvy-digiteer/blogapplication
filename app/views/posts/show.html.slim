@@ -18,10 +18,15 @@
         = render "posts/form", post: @post
         = button_tag "Cancel", type: "button", class: "btn btn-secondary mt-2", data: { action: "post-edit#hideForm" }
 
+
+    h3 Post a comment
   .container
-    = render "comments/form", 
-      post: @post, 
-      comment: @post.comments.build,
-      submit_label: "Reply"
-    = render "comments/comments", comments: @comments, post: @post
+    = turbo_frame_tag "new_comment", data: { controller: "comment-form" } do
+      = render "comments/form", 
+        post: @post, 
+        comment: @post.comments.build,
+        submit_label: "Reply"
+    h3 Comments
+    = turbo_frame_tag "comments" do
+      = render @comments, comments: @comments, post: @post
 
