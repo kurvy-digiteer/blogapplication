@@ -1,0 +1,66 @@
+<% content_for :title, "Edit Post (Admin)" %>
+
+<div class="container">
+  <h1 class="text-center">Admin Dashboard</h1>
+  <%= render "admin/nav_links" %>
+
+      <h2 class="card-title mb-4">Edit Post</h2>
+
+      <div class="mb-3">
+        <strong>Author:</strong>
+        <% if @post.user %>
+          <%= @post.user.name %>
+        <% else %>
+          <%= @post.customer.name %>
+        <% end %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Created:</strong> <%= @post.created_at.strftime("%B %d, %Y") %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Views:</strong> <%= @post.views %>
+      </div>
+
+      <%= form_with(model: @post, url: admin_post_path(@post)) do |form| %>
+
+        <% if @post.errors.any? %>
+          <div class="alert alert-danger">
+            <h2><%= pluralize(@post.errors.count, "error") %> prohibited this post from being saved:</h2>
+            <ul>
+              <% @post.errors.each do |error| %>
+                <li><%= error.full_message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="field">
+        <%= form.label :title, style: "display: block" %>
+        <%= form.text_field :title %>
+        </div>
+
+        <div class="field">
+         <%= form.label :body, style: "display: block" %>
+          <%= form.rich_text_area :body %>
+        </div>
+
+        <div class="form-check mb-3">
+          <%= form.check_box :active, class: "form-check-input" %>
+          <%= form.label :active, "Active", class: "form-check-label" %>
+        </div>
+
+        <div class="form-check mb-3">
+          <%= form.check_box :feature, class: "form-check-input" %>
+          <%= form.label :feature, "Featured", class: "form-check-label" %>
+        </div>
+    
+
+        <div class="d-flex gap-2">
+          <%= form.submit "Update Post", class: "btn btn-primary" %>
+          <%= link_to "Cancel", admin_post_path(@post), class: "btn btn-secondary" %>
+        </div>
+      <% end %>
+
+</div> 

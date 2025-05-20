@@ -1,0 +1,30 @@
+<%= form_with(model: post, url: featured_path) do |form| %>
+
+  <% if post.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(post.errors.count, "error") %> prohibited this post from being saved:</h2>
+      <ul>
+        <% post.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :title, style: "display: block" %>
+    <%= form.text_field :title %>
+  </div>
+
+  <div class="field">
+    <%= form.label :body, style: "display: block" %>
+    <%= form.rich_text_area :body %>
+  </div class="field">
+
+  <%= form.hidden_field :active, value: true %>
+  <%= form.hidden_field :feature, value: true %>
+
+  <div class="field">
+    <%= form.submit %>
+  </div>
+<% end %> 

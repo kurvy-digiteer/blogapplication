@@ -1,0 +1,36 @@
+<div class="container">
+  <%= render @post %>
+  
+  <div class="post-actions">
+    <%= render "likes/like_button", post: @post %>
+    
+    <% if user_signed_in? && (@post.user_id == current_user.id) %>
+      <%= link_to "Edit this post", edit_post_path(@post), class: "btn btn-primary" %>
+    <% elsif customer_signed_in? && @post.customer_id == current_customer.id %>
+      <%= link_to "Edit this post", edit_post_path(@post), class: "btn btn-primary" %>
+    <% end %>
+    
+    <% if user_signed_in? && (@post.user_id == current_user.id) %>
+      <%= button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger" %>
+    <% elsif customer_signed_in? && @post.customer_id == current_customer.id %>
+      <%= button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger" %>
+    <% end %>
+    
+    <%= link_to "Back to posts", posts_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<div class="container">
+  <%= render "comments/form", 
+    post: @post, 
+    comment: @post.comments.build,
+    submit_label: "Reply" %>
+    
+  <% @comments.each do |comment| %>
+    <%= render "comments/comment", 
+      post: @post, 
+      comment: comment %>
+  <% end %>
+</div>
+
+

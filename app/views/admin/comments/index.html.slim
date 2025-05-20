@@ -1,0 +1,29 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  table.table.table-dark.table-striped
+    thead
+      tr
+        th scope="col" = sortable_column("id", "Comment ID")
+        th scope="col" = sortable_column("title", "Post")
+        th scope="col" = sortable_column("name", "Username")
+        th scope="col" = sortable_column("body", "Comment")
+        th scope="col" = sortable_column("created_at", "Created")
+        th scope="col" Actions
+    tbody
+      - @comments.each do |comment|
+        tr
+          th scope="row" = comment.id
+          td = comment.post_title
+          td = comment.author_name
+          td
+            - if comment.body.is_a?(ActionText::RichText)
+              = truncate(comment.body.to_plain_text, length: 50)
+            - else
+              = truncate(comment.body, length: 50)
+          td = comment.created_at.strftime("%B %d, %Y")
+          td
+            = link_to "Edit", edit_admin_comment_path(comment), class: "btn btn-primary btn-sm"
+            = button_to "Delete", admin_comment_path(comment), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure?" } }
+  = pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 

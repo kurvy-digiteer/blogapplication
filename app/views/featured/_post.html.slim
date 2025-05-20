@@ -1,0 +1,43 @@
+.bg-dark.text-white.p-3.rounded id=dom_id(post)
+  h2 = post.title
+  h5 Posted on #{post.created_at.strftime("%B %d, %Y")}
+
+  - if post.feature
+    h6 THIS IS A FEATURED POST
+
+  h6
+    | Posted by 
+    - if post.user.present?
+      = link_to post.user.name, user_path(post.user)
+    - elsif post.customer.present?
+      = link_to post.customer.name, customer_path(post.customer)
+
+  h6 = pluralize(post.likes_count, "like")
+  h6 = pluralize(post.views, "view")
+
+  .post-body
+    - trunc_length = 100
+    - plain_body = strip_tags(post.body.to_s)
+    - is_truncated = plain_body.length > trunc_length
+    span.post-body-short
+      = truncate(plain_body, length: trunc_length)
+      - if is_truncated
+        a.read-more-link href="#" onclick="showFullPostBody(this); return false;" Read more
+    span.post-body-full style="display: none;"
+      = plain_body
+      a.read-less-link href="#" onclick="hideFullPostBody(this); return false;" Show less
+
+javascript:
+  function showFullPostBody(link) {
+    var shortSpan = link.closest('.post-body-short');
+    var fullSpan = shortSpan.parentNode.querySelector('.post-body-full');
+    shortSpan.style.display = 'none';
+    fullSpan.style.display = '';
+  }
+
+  function hideFullPostBody(link) {
+    var fullSpan = link.closest('.post-body-full');
+    var shortSpan = fullSpan.parentNode.querySelector('.post-body-short');
+    fullSpan.style.display = 'none';
+    shortSpan.style.display = '';
+  } 

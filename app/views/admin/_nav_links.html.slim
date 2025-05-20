@@ -1,0 +1,11 @@
+.container.text-center
+  p
+    = link_to "Admin", admin_root_path
+    - unless params[:controller].split('/').last.eql?("admin")
+      |  > #{params[:controller].split('/').last.capitalize}
+
+  .btn-group
+    = render "admin/link", resource: Post
+    = render "admin/link", resource: Comment
+    = render "admin/link", resource: User
+    = render "admin/link", resource: Customer 

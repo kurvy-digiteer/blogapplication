@@ -1,0 +1,40 @@
+<div class="container">
+  <h1 class="text-center">Admin Dashboard</h1>
+  <%= render "admin/nav_links" %>
+
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col"><%= sortable_column("id", "Comment ID") %></th>
+        <th scope="col"><%= sortable_column("title", "Post") %></th>
+        <th scope="col"><%= sortable_column("name", "Username") %></th>
+        <th scope="col"><%= sortable_column("body", "Comment") %></th>
+        <th scope="col"><%= sortable_column("created_at", "Created") %></th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @comments.each do |comment| %>
+        <tr>
+          <th scope="row"><%= comment.id %></th>
+          <td><%= comment.post_title %></td>
+          <td><%= comment.author_name %></td>
+          <td>
+            <% if comment.body.is_a?(ActionText::RichText) %>
+              <%= truncate(comment.body.to_plain_text, length: 50) %>
+            <% else %>
+              <%= truncate(comment.body, length: 50) %>
+            <% end %>
+          </td>
+          <td><%= comment.created_at.strftime("%B %d, %Y") %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_comment_path(comment), class: "btn btn-primary btn-sm" %>
+            <%= button_to "Delete", admin_comment_path(comment), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure?" } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+</div> 

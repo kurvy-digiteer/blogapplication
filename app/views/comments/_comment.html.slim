@@ -1,0 +1,42 @@
+.comment class="comment-#{comment.id} border rounded p-3 mb-3"
+  .d-flex.justify-content-between.align-items-start
+    .comment-meta
+      - if comment.user
+        = comment.user.email
+      - else
+        = comment.customer.email
+
+      .text-muted.small
+        - if (comment.updated_at - comment.created_at) > 1
+          span Edited #{time_ago_in_words(comment.updated_at)} ago
+        - else
+          span Posted #{time_ago_in_words(comment.created_at)}
+
+    - if current_user == comment.user
+      .btn-group
+        = link_to "Edit", nil, remote: true, class: "btn btn-warning btn-sm", \
+          data: { \
+            controller: "comments", \
+            action: "comments#toggleForm", \
+            comments_form_param: "edit-form-#{comment.id}", \
+            comments_body_param: "comment-body-#{comment.id}", \
+            comments_edit_param: "edit-button-#{comment.id}" \
+          }, \
+          id: "edit-button-#{comment.id}"
+
+        = button_to "Delete", [post, comment], class: "btn btn-danger btn-sm", method: :delete
+
+  - if current_user == comment.user
+    div id= "edit-form-#{comment.id}" class="edit-form-#{comment.id} d-none mt-3"
+      = render "comments/form", 
+        post: post, 
+        comment: comment,
+        submit_label: "Update"
+
+  hr.my-2
+  div id = "comment-body-#{comment.id}" class="comment-body-#{comment.id}"
+    = comment.body
+
+  - if comment.image.attached?
+    .mt-2
+      = image_tag comment.image, class: "img-fluid", style: "max-width: 300px; max-height: 300px;" 

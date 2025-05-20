@@ -1,0 +1,9 @@
+- content_for :title, "New featured post"
+
+.container
+  h1.mb-4 New featured post
+
+  = render "featured/form", post: @post
+
+  .mt-4
+    = link_to "Back to Featured Posts", featured_index_path, class: "btn btn-secondary"

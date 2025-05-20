@@ -1,0 +1,9 @@
+- content_for :title, "New post"
+
+.container
+  h1.mb-4 New post
+
+  = render "form", post: @post
+
+  .mt-4
+    = link_to "Back to Posts", posts_path, class: "btn btn-secondary" 

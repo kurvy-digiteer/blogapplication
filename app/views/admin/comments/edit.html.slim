@@ -1,0 +1,27 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  .card.bg-white.text-black.mt-4
+    .card-body
+      h2.card-title.mb-4 Edit Comment
+
+      .mb-3
+        strong Post:
+        = link_to @comment.post.title, admin_post_path(@comment.post)
+
+      .mb-3
+        strong Author:
+        - if @comment.user
+          = @comment.user.name
+        - else
+          = @comment.customer.name
+
+      = form_with(model: [:admin, @comment], local: true) do |f|
+        .form-group.mb-3
+          = f.label :body, "Comment", class: "form-label"
+          = f.rich_text_area :body, class: "form-control bg-white text-black"
+
+        .d-flex.gap-2
+          = f.submit "Update Comment", class: "btn btn-primary"
+          = link_to "Cancel", admin_post_path(@comment.post), class: "btn btn-secondary" 

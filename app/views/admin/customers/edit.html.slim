@@ -1,0 +1,33 @@
+.container
+  h1.text-center Admin Dashboard
+  = render "admin/nav_links"
+
+  .card.bg-dark.text-white.mt-4
+    .card-body
+      h2.card-title.mb-4 Edit Customer
+
+      = form_with(model: [:admin, @customer], local: true) do |f|
+        - if @customer.errors.any?
+          .alert.alert-danger
+            h4 = pluralize(@customer.errors.count, "error") + " prohibited this customer from being saved:"
+            ul
+              - @customer.errors.full_messages.each do |message|
+                li = message
+
+        .form-group.mb-3
+          = f.label :name, class: "form-label"
+          = f.text_field :name, class: "form-control bg-dark text-white"
+
+        .form-group.mb-3
+          = f.label :email, class: "form-label"
+          = f.email_field :email, class: "form-control bg-dark text-white"
+
+        = f.label "New Password", class: "form-label"
+        = f.password_field :password, class: "form-control bg-dark text-white"
+
+        = f.label "New Password Confirmation", class: "form-label"
+        = f.password_field :password_confirmation, class: "form-control bg-dark text-white"
+
+        .d-flex.gap-2
+          = f.submit "Update Customer", class: "btn btn-primary"
+          = link_to "Cancel", admin_customers_path, class: "btn btn-secondary" 

@@ -1,0 +1,41 @@
+<div class="container">
+  <h1 class="text-center">Admin Dashboard</h1>
+  <%= render "admin/nav_links" %>
+
+  <table class="table table-dark table-striped">
+    <thead>
+      <tr>
+        <th scope="col"><%= sortable_column("id", "ID") %></th>
+        <th scope="col"><%= sortable_column("name", "Name") %></th>
+        <th scope="col"><%= sortable_column("email", "Email") %></th>
+        <th scope="col"><%= sortable_column("posts_count", "Posts") %></th>
+        <th scope="col"><%= sortable_column("comments_count", "Comments") %></th>
+        <th scope="col"><%= sortable_column("role", "Role") %></th>
+        <th scope="col"><%= sortable_column("created_at", "Date Created") %></th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @users.each do |user| %>
+        <tr>
+          <th scope="row"><%= user.id %></th>
+          <td><%= user.name %></td>
+          <td><%= user.email %></td>
+          <td><%= pluralize(user.posts.count, "Post") %></td>
+          <td><%= pluralize(user.comments.count, "Comment") %></td>
+          <td><%= user.role_name.titleize %></td>
+          <td><%= user.created_at.strftime("%B %d, %Y") %></td>
+          <td>
+            <%= link_to "Edit", edit_admin_user_path(user), class: "btn btn-warning btn-sm" %>
+            <%= button_to "Delete", admin_user_path(user), method: :delete, class: "btn btn-danger btn-sm", 
+            form: { 
+                data: 
+            { turbo_confirm: "Are you sure you want to delete this user? This will also delete all their posts and comments." } } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <%== pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 %>
+</div> 

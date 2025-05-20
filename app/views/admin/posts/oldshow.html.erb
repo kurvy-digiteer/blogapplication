@@ -1,0 +1,80 @@
+<div class="container">
+  <h1 class="text-center">Admin Dashboard</h1>
+  <%= render "admin/nav_links" %>
+
+  <div class="card bg-dark text-white mt-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="card-title"><%= @post.title %></h2>
+        <div>
+          <%= link_to "Edit Post", edit_admin_post_path(@post), class: "btn btn-warning" %>
+          <%= button_to "Delete", admin_post_path(@post), method: :delete, class: "btn btn-danger", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } } %>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <% if @post.user.present? %>
+          <strong>Author:</strong> <%= @post.user.name %>
+        <% elsif @post.customer.present? %>
+          <strong>Author:</strong> <%= @post.customer.name %>
+        <% end %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Created:</strong> <%= @post.created_at.strftime("%B %d, %Y") %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Views:</strong> <%= @post.views %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Featured:</strong> <%= @post.feature ? "Yes" : "No" %>
+      </div>
+
+      <div class="mb-3">
+        <strong>Active:</strong> <%= @post.active ? "Yes" : "No" %>
+      </div>
+
+      <div class="mb-4">
+        <h4>Content:</h4>
+        <div class="bg-dark p-3 rounded">
+          <%= @post.body %>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h4>Comments (<%= @comments.count %>)</h4>
+        <div class="table-responsive">
+          <table class="table table-dark table-striped">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @comments.each do |comment| %>
+                <tr>
+                  <% if comment.user.present? %>
+                    <td><%= comment.user.name %></td>
+                  <% elsif comment.customer.present? %>
+                    <td><%= comment.customer.name %></td>
+                  <% end %>
+                  <td><%= comment.body.to_plain_text.truncate(50) %></td>
+                  <td><%= time_ago_in_words(comment.created_at) %> ago</td>
+                  <td>
+                    <%= link_to "Edit", edit_admin_comment_path(comment), class: "btn btn-warning btn-sm" %>
+                    <%= button_to "Delete", admin_comment_path(comment), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure?" } } %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
