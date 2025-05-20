@@ -35,8 +35,11 @@ class FeaturedController < ApplicationController
   end
 
   def show
+    @post = Post.where(feature: true, active: true).find(params[:id])
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
+  rescue ActiveRecord::RecordNotFound
+    redirect_to featured_path, alert: "Post not found."
   end
 
   # GET /posts/new
@@ -61,7 +64,7 @@ class FeaturedController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to featured_index_path, notice: "Post was successfully created." }
+        format.html { redirect_to featured_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -74,7 +77,7 @@ class FeaturedController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
-        format.html { redirect_to @post, notice: "Post was successfully updated." }
+        format.html { redirect_to featured_path(@post), notice: "Post was successfully updated." }
         format.json { render :show, status: :ok, location: @post }
       else
         format.html { render :edit, status: :unprocessable_entity }

@@ -55,6 +55,7 @@ class Admin::PostsController < Admin::AdminController
 
   # GET /posts/1/edit
   def edit
+    render partial: "posts/form", locals: { post: @post }
   end
 
   # PATCH/PUT /posts/1 or /posts/1.json

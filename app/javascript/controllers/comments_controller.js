@@ -1,39 +1,28 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    initialize() { }
-    connect() { }
-    toggleForm(event) {
-        console.log("I clicked the edit button.");
-        event.preventDefault();
-        event.stopPropagation();
+    static targets = ["display", "form"]
 
-        const formID = event.params["form"];
-        const commentBodyID = event.params["body"];
-        const editButtonID = event.params["edit"];
-
-        const form = document.getElementById(formID);
-        const commentBody = document.getElementById(commentBodyID);
-        const editButton = document.getElementById(editButtonID);
-        this.toggleEditButton(editButton);
-
-        form.classList.toggle("d-none");
-        form.classList.toggle("mt-5");
-        commentBody.classList.toggle("d-none");
+    showForm() {
+        this.displayTarget.classList.add("d-none")
+        this.formTarget.classList.remove("d-none")
     }
 
-    toggleEditButton(editButton) {
-        if (editButton.innerText === "Edit") {
-            editButton.innerText = "Cancel";
-            this.toggleEditButtonClass(editButton);
-        } else {
-            editButton.innerText = "Edit";
-            this.toggleEditButtonClass(editButton);
+    hideForm() {
+        this.displayTarget.classList.remove("d-none")
+        this.formTarget.classList.add("d-none")
+    }
+
+    afterTurboUpdate(event) {
+        // After a Turbo Stream update, always hide the form and show the comment body
+        if (this.hasFormTarget && this.hasDisplayTarget) {
+            this.formTarget.classList.add("d-none")
+            this.displayTarget.classList.remove("d-none")
         }
     }
 
-    toggleEditButtonClass(editButton) {
-        editButton.classList.toggle("btn-secondary");
-        editButton.classList.toggle("btn-warning");
+    connect() {
+        // Listen for Turbo Stream updates to this comment frame
+        this.element.addEventListener("turbo:frame-render", this.afterTurboUpdate.bind(this))
     }
 }

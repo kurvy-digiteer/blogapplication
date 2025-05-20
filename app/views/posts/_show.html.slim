@@ -23,5 +23,7 @@
       post: @post, 
       comment: @post.comments.build,
       submit_label: "Reply"
-    = render "comments/comments", comments: @comments, post: @post
-
+    - comments.each do |comment|
+      = render "comments/comment", 
+        post: @post, 
+        comment: comment 

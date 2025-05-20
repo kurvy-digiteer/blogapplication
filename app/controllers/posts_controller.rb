@@ -41,6 +41,9 @@ class PostsController < ApplicationController
 
   # GET /posts/1/edit
   def edit
+    respond_to do |format|
+      format.html { render partial: "posts/form", locals: { post: @post } }
+    end
   end
 
   # POST /posts or /posts.json
@@ -58,6 +61,12 @@ class PostsController < ApplicationController
         format.html { redirect_to posts_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("form", partial: "posts/form", locals: { post: @post }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was not created." })
+          ]
+        end
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
@@ -68,11 +77,27 @@ class PostsController < ApplicationController
   def update
     respond_to do |format|
       if @post.update(post_params)
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+            view_context.dom_id(@post),
+            partial: "posts/show",
+            locals: {
+              post: @post,
+              comments: @post.comments.order(created_at: :desc) }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Post was successfully updated." })
+            ]
+        end
         format.html { redirect_to @post, notice: "Post was successfully updated." }
         format.json { render :show, status: :ok, location: @post }
       else
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("form", partial: "posts/form", locals: { post: @post }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was NOT UPDATED" })
+          ]
+        end
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
   end

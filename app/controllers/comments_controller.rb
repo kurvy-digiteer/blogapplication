@@ -10,12 +10,21 @@ class CommentsController < ApplicationController
             @comment.customer = current_customer
         end
 
-        if @comment.save
-            flash[:notice] = "Your comment has been created"
-            redirect_to parent_post_path(@post)
-        else
-            flash[:alert] = "YOUR COMMENT WAS NOT CREATED"
-            redirect_to parent_post_path(@post)
+        respond_to do |format|
+            if @comment.save
+                format.turbo_stream do
+                    render turbo_stream: [
+                        turbo_stream.replace("comments", partial: "comments/comments", locals: { post: @post, comments: @post.comments.order(created_at: :desc) }),
+                        turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Your comment has been created" })
+                    ]
+                end
+                format.html { redirect_to parent_post_path(@post), notice: "Your comment has been created" }
+            else
+                format.turbo_stream do
+                    render turbo_stream: turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "YOUR COMMENT WAS NOT CREATED" })
+                end
+                format.html { redirect_to parent_post_path(@post), alert: "YOUR COMMENT WAS NOT CREATED" }
+            end
         end
     end
 
@@ -53,8 +62,22 @@ class CommentsController < ApplicationController
 
         respond_to do |format|
             if @comment.update(comment_params)
+                format.turbo_stream do
+                    render turbo_stream: turbo_stream.replace(
+                        view_context.dom_id(@comment),
+                        partial: "comments/comment",
+                        locals: { comment: @comment, post: @post }
+                    )
+                end
                 format.html { redirect_to parent_post_path(@post), notice: "Comment has been updated!" }
             else
+                format.turbo_stream do
+                    render turbo_stream: turbo_stream.replace(
+                        "edit-form-#{@comment.id}",
+                        partial: "comments/form",
+                        locals: { comment: @comment, post: @post, submit_label: "Update" }
+                    )
+                end
                 format.html { redirect_to parent_post_path(@post), alert: "Comment WAS NOT updated!" }
             end
         end
