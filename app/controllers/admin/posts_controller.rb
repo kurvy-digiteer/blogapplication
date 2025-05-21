@@ -82,7 +82,7 @@ class Admin::PostsController < Admin::AdminController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by!(permalink: params[:id])
   rescue ActiveRecord::RecordNotFound
     respond_to do |format|
       format.html { redirect_to admin_posts_path, alert: "Post not found." }

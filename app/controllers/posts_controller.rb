@@ -116,8 +116,11 @@ class PostsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    # Find post by permalink, find_by! will raise an ActiveRecord error not found
+    # only use find_by if you are sure the record will exist and you have a custom
+    # action to do if it doesn't exist as find_by! will just raise an error
     def set_post
-      @post = Post.find(params[:id])
+      @post = Post.find_by!(permalink: params[:id])
     end
 
     def authenticate_user_or_customer!

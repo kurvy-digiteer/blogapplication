@@ -32,5 +32,57 @@
     .like-count {
       font-size: 0.9rem;
     }
+
+    .like-message {
+      font-size: 0.8rem;
+      margin-left: 0.5rem;
+      color: #666;
+      display: none;
+    }
+
+    &:hover {
+      .like-message {
+        display: inline;
+      }
+    }
   }
+
+  &__button--unauth {
+    display: inline-block;
+    position: relative;
+
+    .like-content {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .like-tooltip {
+      display: none !important;
+      position: absolute;
+      left: 50%;
+      bottom: 120%;
+      transform: translateX(-50%);
+      background: #222;
+      color: #fff;
+      padding: 0.3rem 0.7rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      z-index: 10;
+      opacity: 0.95;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    &:hover .like-tooltip {
+      display: block !important;
+      border: 2px solid red;
+    }
+  }
+}
+
+.like-button__button--unauth:hover > .like-tooltip {
+  display: block !important;
+  border: 2px solid red;
 } 

@@ -35,7 +35,7 @@ class FeaturedController < ApplicationController
   end
 
   def show
-    @post = Post.where(feature: true, active: true).find(params[:id])
+    @post = Post.where(feature: true, active: true).find_by!(permalink: params[:id])
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
   rescue ActiveRecord::RecordNotFound
@@ -126,7 +126,7 @@ class FeaturedController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by!(permalink: params[:id])
   end
 
   def authenticate_user_or_customer!

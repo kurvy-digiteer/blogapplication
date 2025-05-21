@@ -102,9 +102,9 @@ class CommentsController < ApplicationController
 
     def set_post
         if params[:post_id]
-            @post = Post.find(params[:post_id])
+            @post = Post.find_by!(permalink: params[:post_id])
         elsif params[:featured_id]
-            @post = Post.find(params[:featured_id])
+            @post = Post.find_by!(permalink: params[:featured_id])
         end
     end
 

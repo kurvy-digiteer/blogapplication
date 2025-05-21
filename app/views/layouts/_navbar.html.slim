@@ -9,10 +9,10 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
           = link_to "Home", root_path, class: "nav-link"
         - if current_user
           li.nav-item
-            = link_to "About", user_path(current_user), class: "nav-link"
+            = link_to "Profile", user_path(current_user.name), class: "nav-link"
         - elsif current_customer
           li.nav-item
-            = link_to "About", customer_path(current_customer), class: "nav-link"
+            = link_to "Profile", customer_path(current_customer.name), class: "nav-link"
         li.nav-item
           = link_to "Posts", posts_path, class: "nav-link"
         li.nav-item

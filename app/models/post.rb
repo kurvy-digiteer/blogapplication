@@ -1,4 +1,6 @@
 class Post < ApplicationRecord
+  before_validation :generate_permalink
+  validates :permalink, presence: true, uniqueness: true
     validates :title, presence: true, uniqueness: { case_sensitive: false }, length: { minimum: 5, maximum: 255 }
     validates :body, presence: true, length: { minimum: 10, maximum: 1500 }
     validate :user_or_customer_present
@@ -17,6 +19,11 @@ class Post < ApplicationRecord
         likes.exists?(liker: liker)
     end
 
+    # for kebab case paths permalink column
+    def to_param
+      permalink
+    end
+
   # Custom scope to search ActionText body, tutorial I was following has older version of ransack
   scope :with_body_text, ->(query) {
     joins(:rich_text_body).where("action_text_rich_texts.body ILIKE ?", "%#{query}%")
@@ -30,7 +37,11 @@ class Post < ApplicationRecord
         [ "user", "customer", "comments", "likes" ]
     end
 
+    # Generate permalink from title kebab-case
     private
+    def generate_permalink
+      self.permalink = title.to_s.parameterize if title.present?
+    end
 
     def user_or_customer_present
       if user_id.present? && customer_id.present?

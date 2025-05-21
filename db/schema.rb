@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_19_063907) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,8 +97,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_063907) do
     t.boolean "feature"
     t.integer "customer_id"
     t.integer "likes_count", default: 0, null: false
+    t.string "permalink"
     t.index "lower((title)::text)", name: "index_posts_on_lower_title", unique: true
     t.index ["customer_id"], name: "index_posts_on_customer_id"
+    t.index ["permalink"], name: "index_posts_on_permalink", unique: true
     t.index ["user_id"], name: "index_posts_on_user_id"
     t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present"
   end
@@ -113,7 +115,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_19_063907) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.integer "views", default: 0
-    t.integer "role", default: 1
+    t.integer "role", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

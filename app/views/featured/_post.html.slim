@@ -8,9 +8,9 @@
   h6
     | Posted by 
     - if post.user.present?
-      = link_to post.user.name, user_path(post.user), data: { turbo: false }
+      = link_to post.user.name, user_path(post.user.name), data: { turbo: false }
     - elsif post.customer.present?
-      = link_to post.customer.name, customer_path(post.customer), data: { turbo: false }
+      = link_to post.customer.name, customer_path(post.customer.name), data: { turbo: false }
 
   h6 = pluralize(post.likes_count, "like")
   h6 = pluralize(post.views, "view")

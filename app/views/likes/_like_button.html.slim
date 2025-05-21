@@ -10,6 +10,8 @@
         i.far.fa-heart
         span.like-count data-like-target="count" = post.likes_count
   - else
-    = link_to new_customer_session_path, class: "like-button__button" do
-      i.far.fa-heart
-      span.like-count = post.likes_count 
+    = link_to new_customer_session_path, class: "like-button__button like-button__button--unauth", data: { turbo: false } do
+      span.like-content
+        i.far.fa-heart
+        span.like-count = post.likes_count
+      span.like-tooltip Sign in to like this post 

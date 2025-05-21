@@ -91,9 +91,9 @@ Rails.application.routes.draw do
     registrations: "customers/registrations"
   }
 
-
-  get "u/:id", to: "users#profile", as: "user"
-  get "c/:id", to: "customers#profile", as: "customer"
+  # uses permalinks for user and customer profiles
+  get "u/:name", to: "users#profile", as: "user"
+  get "c/:name", to: "customers#profile", as: "customer"
 
   # /posts/1/comments/4
   resources :posts do
