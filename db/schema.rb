@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_21_073929) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,8 +58,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "customer_id"
+    t.bigint "site_id", null: false
     t.index ["customer_id"], name: "index_comments_on_customer_id"
     t.index ["post_id"], name: "index_comments_on_post_id"
+    t.index ["site_id"], name: "index_comments_on_site_id"
     t.index ["user_id"], name: "index_comments_on_user_id"
     t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present_comments"
   end
@@ -74,6 +76,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
     t.integer "views", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "site_id", null: false
+    t.index ["site_id"], name: "index_customers_on_site_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -98,11 +102,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
     t.integer "customer_id"
     t.integer "likes_count", default: 0, null: false
     t.string "permalink"
+    t.bigint "site_id", null: false
     t.index "lower((title)::text)", name: "index_posts_on_lower_title", unique: true
     t.index ["customer_id"], name: "index_posts_on_customer_id"
     t.index ["permalink"], name: "index_posts_on_permalink", unique: true
+    t.index ["site_id"], name: "index_posts_on_site_id"
     t.index ["user_id"], name: "index_posts_on_user_id"
     t.check_constraint "user_id IS NOT NULL AND customer_id IS NULL OR user_id IS NULL AND customer_id IS NOT NULL", name: "check_user_or_customer_present"
+  end
+
+  create_table "sites", force: :cascade do |t|
+    t.string "name"
+    t.string "slug"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_sites_on_slug", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -116,16 +130,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_21_060712) do
     t.string "name"
     t.integer "views", default: 0
     t.integer "role", default: 0
+    t.bigint "site_id", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["site_id"], name: "index_users_on_site_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "comments", "customers"
   add_foreign_key "comments", "posts"
+  add_foreign_key "comments", "sites"
   add_foreign_key "comments", "users"
+  add_foreign_key "customers", "sites"
   add_foreign_key "likes", "posts"
   add_foreign_key "posts", "customers"
+  add_foreign_key "posts", "sites"
   add_foreign_key "posts", "users"
+  add_foreign_key "users", "sites"
 end
