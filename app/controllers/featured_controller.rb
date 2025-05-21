@@ -118,7 +118,7 @@ class FeaturedController < ApplicationController
     @post.destroy!
 
     respond_to do |format|
-      format.html { redirect_to featured_path, status: :see_other, notice: "Post was successfully destroyed." }
+      format.html { redirect_to featured_index_path, status: :see_other, notice: "Post was successfully destroyed." }
       format.json { head :no_content }
     end
   end
