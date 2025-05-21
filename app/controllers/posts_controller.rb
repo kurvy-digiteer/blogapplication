@@ -14,6 +14,8 @@ class PostsController < ApplicationController
       posts = posts.where(created_at: Date.today.all_week)
     when "this_month"
       posts = posts.where(created_at: Date.today.all_month)
+    when "featured"
+      posts = posts.where(feature: true)
     end
 
     if params[:filter_date].present?
@@ -58,14 +60,13 @@ class PostsController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        # No turbo stream here since it is redirecting to a different page
         format.html { redirect_to posts_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("form", partial: "posts/form", locals: { post: @post }),
-            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was not created." })
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @post.errors.full_messages.join(", ") })
           ]
         end
         format.html { render :new, status: :unprocessable_entity }
@@ -95,7 +96,7 @@ class PostsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace("form", partial: "posts/form", locals: { post: @post }),
-            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was NOT UPDATED" })
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @post.errors.full_messages.join(", ") })
           ]
         end
         format.html { render :edit, status: :unprocessable_entity }

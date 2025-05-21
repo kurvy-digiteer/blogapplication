@@ -11,8 +11,8 @@
           - elsif customer_signed_in? && @post.customer_id == current_customer.id
             = button_tag "Edit this post", type: "button", class: "btn btn-primary me-2", data: { action: "post-edit#showForm" }
 
-          = button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger me-2" if user_signed_in? && (@post.user_id == current_user.id)
-          = link_to "Back to posts", posts_path, class: "btn btn-secondary"
+          = button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger me-2", data: { turbo: false } if user_signed_in? && (@post.user_id == current_user.id)
+          = link_to "Back to posts", posts_path, class: "btn btn-secondary", data: { turbo: false }
 
       .post-form.d-none data-post-edit-target="form"
         = render "posts/form", post: @post

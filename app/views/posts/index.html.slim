@@ -16,7 +16,14 @@
         = text_field_tag :filter_date, params[:filter_date], class: "form-control d-inline-block w-auto datepicker", id: "datepicker", autocomplete: "off"
 
   .mb-4
-    = link_to "New post", new_post_path, class: "btn btn-primary"
+    .btn-group.me-2
+      = link_to "All Active Posts", posts_path(filter: nil), class: "btn btn-outline-primary #{@filter.nil? ? 'active' : ''}"
+      = link_to "Featured Posts", posts_path(filter: "featured"), class: "btn btn-outline-primary #{@filter == 'featured' ? 'active' : ''}"
+    
+    
+
+  - if user_signed_in? || customer_signed_in?
+    = link_to "New post", new_post_path, class: "btn btn-primary mb-4"
 
   #posts
     - @posts.each do |post|

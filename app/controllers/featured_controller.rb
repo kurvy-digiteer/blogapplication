@@ -44,11 +44,14 @@ class FeaturedController < ApplicationController
 
   # GET /posts/new
   def new
-    @post = Post.new
+    @post = Post.new(feature: true)
   end
 
   # GET /posts/1/edit
   def edit
+    respond_to do |format|
+      format.html { render partial: "featured/form", locals: { post: @post } }
+    end
   end
 
   # POST /posts or /posts.json
@@ -64,9 +67,15 @@ class FeaturedController < ApplicationController
 
     respond_to do |format|
       if @post.save
-        format.html { redirect_to featured_path, notice: "Post was successfully created." }
+        format.html { redirect_to featured_index_path, notice: "Post was successfully created." }
         format.json { render :show, status: :created, location: @post }
       else
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("form", partial: "featured/form", locals: { post: @post }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @post.errors.full_messages.join(", ") })
+          ]
+        end
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @post.errors, status: :unprocessable_entity }
       end
@@ -76,12 +85,30 @@ class FeaturedController < ApplicationController
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
     respond_to do |format|
-      if @post.update(post_params)
+      if @post.update(post_params.merge(feature: true))
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              view_context.dom_id(@post),
+              partial: "featured/show",
+              locals: {
+                post: @post,
+                comments: @post.comments.order(created_at: :desc)
+              }
+            ),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Post was successfully updated." })
+          ]
+        end
         format.html { redirect_to featured_path(@post), notice: "Post was successfully updated." }
         format.json { render :show, status: :ok, location: @post }
       else
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("form", partial: "featured/form", locals: { post: @post }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @post.errors.full_messages.join(", ") })
+          ]
+        end
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -122,6 +149,6 @@ class FeaturedController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :active, :feature)
+    params.require(:post).permit(:title, :body, :active)
   end
 end

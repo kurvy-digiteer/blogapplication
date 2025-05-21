@@ -1,7 +1,7 @@
 - content_for :title, "Featured Posts"
 
 .container
-  h1 Featured Posts
+  h1.mb-4 Featured Posts
 
   .row.mb-4.d-flex.align-items-end
     .col-md-6
@@ -13,12 +13,13 @@
     .col-md-6
       = form_with url: featured_index_path, method: :get, local: true, class: "mb-0 d-flex align-items-end" do
         label.form-label.me-2 for="filter_date" Filter by date:
-        = text_field_tag :filter_date, params[:filter_date], class: "form-control d-inline-block w-auto datepicker", id: "filter_date", autocomplete: "off"
+        = text_field_tag :filter_date, params[:filter_date], class: "form-control d-inline-block w-auto datepicker", id: "datepicker", autocomplete: "off"
 
-  .mb-4
-    = link_to "New post", new_featured_path, class: "btn btn-primary"
+  - if user_signed_in? || customer_signed_in?
+    .mb-4
+      = link_to "New Featured Post", new_featured_path, class: "btn btn-primary"
 
-  #posts
+  #featured_posts
     - @posts.each do |post|
       = render "featured/post", post: post
       p
