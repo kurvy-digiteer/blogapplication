@@ -5,7 +5,7 @@ class FeaturedController < ApplicationController
 
   def index
     @filter = params[:filter]
-    posts = Post.where(feature: true, active: true).includes(:user, :customer)
+    posts = @site.posts.where(feature: true, active: true).includes(:user, :customer)
 
     case @filter
     when "today"
@@ -35,7 +35,7 @@ class FeaturedController < ApplicationController
   end
 
   def show
-    @post = Post.where(feature: true, active: true).find_by!(permalink: params[:id])
+    @post = @site.posts.where(feature: true, active: true).find_by!(permalink: params[:id])
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
   rescue ActiveRecord::RecordNotFound
@@ -44,7 +44,7 @@ class FeaturedController < ApplicationController
 
   # GET /posts/new
   def new
-    @post = Post.new(feature: true)
+    @post = @site.posts.build(feature: true)
   end
 
   # GET /posts/1/edit
@@ -56,7 +56,7 @@ class FeaturedController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = Post.new(post_params)
+    @post = @site.posts.build(post_params)
     if user_signed_in?
       @post.user = current_user
     else
@@ -126,7 +126,7 @@ class FeaturedController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_post
-    @post = Post.find_by!(permalink: params[:id])
+    @post = @site.posts.find_by!(permalink: params[:id])
   end
 
   def authenticate_user_or_customer!

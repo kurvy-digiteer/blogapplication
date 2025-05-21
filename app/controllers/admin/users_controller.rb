@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::AdminController
     sort_column = sortable_columns[params[:sort]] || "users.id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
 
-    users = User.left_joins(:posts, :comments)
+    users = @site.users.left_joins(:posts, :comments)
                .select("users.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
                .group("users.id")
                .order(Arel.sql("#{sort_column} #{sort_direction}"))
@@ -46,7 +46,7 @@ class Admin::UsersController < Admin::AdminController
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = @site.users.find(params[:id])
   end
 
   def user_params

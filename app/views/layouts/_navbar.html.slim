@@ -9,14 +9,14 @@ nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
           = link_to "Home", root_path, class: "nav-link"
         - if current_user
           li.nav-item
-            = link_to "Profile", user_path(current_user.name), class: "nav-link"
+            = link_to "Profile", user_path(current_user.name, site_slug: @site.slug), class: "nav-link"
         - elsif current_customer
           li.nav-item
-            = link_to "Profile", customer_path(current_customer.name), class: "nav-link"
+            = link_to "Profile", customer_path(current_customer.name, site_slug: @site.slug), class: "nav-link"
         li.nav-item
-          = link_to "Posts", posts_path, class: "nav-link"
+          = link_to "Posts", posts_path(site_slug: @site.slug), class: "nav-link"
         li.nav-item
-          = link_to "Featured", featured_index_path, class: "nav-link"
+          = link_to "Featured", featured_index_path(site_slug: @site.slug), class: "nav-link"
       ul.navbar-nav
         = render 'search/form'
         = render 'user/session_manager' 

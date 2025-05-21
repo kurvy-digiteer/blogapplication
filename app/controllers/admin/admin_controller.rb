@@ -5,18 +5,18 @@ class Admin::AdminController < ApplicationController
   before_action :authorize_admin!
 
   def index
-    @posts = Post.includes(:user, :customer, :comments).order(created_at: :desc)
-    @users = User.includes(:posts, :comments).order(created_at: :desc)
-    @customers = Customer.includes(:posts, :comments).order(created_at: :desc)
-    @comments = Comment.includes(:post, :user, :customer).order(created_at: :desc)
+    @posts = @site.posts.includes(:user, :customer, :comments).order(created_at: :desc)
+    @users = @site.users.includes(:posts, :comments).order(created_at: :desc)
+    @customers = @site.customers.includes(:posts, :comments).order(created_at: :desc)
+    @comments = @site.comments.includes(:post, :user, :customer).order(created_at: :desc)
   end
 
   def show_post
-    @post = Post.find(params[:id])
+    @post = @site.posts.find(params[:id])
   end
 
   def destroy_post
-    @post = Post.find(params[:id])
+    @post = @site.posts.find(params[:id])
     @post.destroy
     redirect_to admin_posts_path, notice: "Post was successfully deleted."
   end

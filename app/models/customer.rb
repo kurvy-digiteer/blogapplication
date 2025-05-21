@@ -6,6 +6,7 @@ class Customer < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
+  belongs_to :site
 
 
   # Ransackable attributes for search, allows what can be explicitly searched for

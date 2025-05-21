@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Customers::PasswordsController < Devise::PasswordsController
+  before_action :set_site, only: [ :new, :create, :edit, :update ]
+
   # GET /resource/password/new
   # def new
   #   super
@@ -23,12 +25,17 @@ class Customers::PasswordsController < Devise::PasswordsController
 
   # protected
 
-  # def after_resetting_password_path_for(resource)
-  #   super(resource)
-  # end
+  def set_site
+    @site = Site.find_by!(slug: params[:site_slug])
+  end
 
-  # The path used after sending reset password instructions
-  # def after_sending_reset_password_instructions_path_for(resource_name)
-  #   super(resource_name)
-  # end
+  # Override the default after_resetting_password_path_for to include site context
+  def after_resetting_password_path_for(resource)
+    site_path(@site)
+  end
+
+  # Override the default after_sending_reset_password_instructions_path_for to include site context
+  def after_sending_reset_password_instructions_path_for(resource_name)
+    site_path(@site)
+  end
 end

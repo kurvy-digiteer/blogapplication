@@ -9,7 +9,7 @@ class Admin::PostsController < Admin::AdminController
     sort_column = sortable_columns.include?(params[:sort]) ? params[:sort] : "id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
 
-    posts_scope = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
+    posts_scope = @site.posts.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
 
     if params[:all_time].present?
       # When all_time is present, use regular pagination without any date filtering
@@ -50,7 +50,7 @@ class Admin::PostsController < Admin::AdminController
 
   # GET /posts/new
   def new
-    @post = Post.new
+    @post = @site.posts.build
   end
 
   # GET /posts/1/edit
@@ -82,7 +82,7 @@ class Admin::PostsController < Admin::AdminController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_post
-    @post = Post.find_by!(permalink: params[:id])
+    @post = @site.posts.find_by!(permalink: params[:id])
   rescue ActiveRecord::RecordNotFound
     respond_to do |format|
       format.html { redirect_to admin_posts_path, alert: "Post not found." }

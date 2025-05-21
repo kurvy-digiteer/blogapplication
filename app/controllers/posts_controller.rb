@@ -5,7 +5,7 @@ class PostsController < ApplicationController
 
   def index
     @filter = params[:filter]
-    posts = Post.where(active: true).includes(:user, :customer)
+    posts = @site.posts.where(active: true).includes(:user, :customer)
 
     case @filter
     when "today"
@@ -38,7 +38,7 @@ class PostsController < ApplicationController
 
   # GET /posts/new
   def new
-    @post = Post.new
+    @post = @site.posts.build
   end
 
   # GET /posts/1/edit
@@ -50,12 +50,9 @@ class PostsController < ApplicationController
 
   # POST /posts or /posts.json
   def create
-    @post = Post.new(post_params)
-    if user_signed_in?
-      @post.user = current_user
-    else
-      @post.customer = current_customer
-    end
+    @post = @site.posts.build(post_params)
+    @post.user = current_user if user_signed_in?
+    @post.customer = current_customer if customer_signed_in?
     @post.active = true
 
     respond_to do |format|
@@ -120,7 +117,7 @@ class PostsController < ApplicationController
     # only use find_by if you are sure the record will exist and you have a custom
     # action to do if it doesn't exist as find_by! will just raise an error
     def set_post
-      @post = Post.find_by!(permalink: params[:id])
+      @post = @site.posts.find_by!(permalink: params[:id])
     end
 
     def authenticate_user_or_customer!

@@ -13,7 +13,7 @@ class Admin::CustomersController < Admin::AdminController
     sort_column = sortable_columns[params[:sort]] || "customers.id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
 
-    customers = Customer.left_joins(:posts, :comments)
+    customers = @site.customers.left_joins(:posts, :comments)
                       .select("customers.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
                       .group("customers.id")
                       .order(Arel.sql("#{sort_column} #{sort_direction}"))
@@ -46,7 +46,7 @@ class Admin::CustomersController < Admin::AdminController
   private
 
   def set_customer
-    @customer = Customer.find(params[:id])
+    @customer = @site.customers.find(params[:id])
   end
 
   def customer_params

@@ -7,6 +7,7 @@ class Post < ApplicationRecord
 
     belongs_to :user, optional: true
     belongs_to :customer, optional: true
+    belongs_to :site
 
     has_many :comments, dependent: :destroy
     has_many :likes, dependent: :destroy

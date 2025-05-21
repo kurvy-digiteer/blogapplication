@@ -1,4 +1,7 @@
-= form_with(model: post) do |form|
+- if post.persisted?
+  = form_with(model: post, url: post_path(post, site_slug: @site.slug)) do |form|
+- else
+  = form_with(model: post, url: posts_path(site_slug: @site.slug)) do |form|
   - if post.errors.any?
     .alert.alert-danger
       h2 = pluralize(post.errors.count, "error") + " prohibited this post from being saved:"

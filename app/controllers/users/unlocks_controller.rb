@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::UnlocksController < Devise::UnlocksController
+  before_action :set_site, only: [ :show, :create ]
+
   # GET /resource/unlock/new
   # def new
   #   super
@@ -23,8 +25,14 @@ class Users::UnlocksController < Devise::UnlocksController
   #   super(resource)
   # end
 
-  # The path used after unlocking the resource
-  # def after_unlock_path_for(resource)
-  #   super(resource)
-  # end
+  private
+
+  def set_site
+    @site = Site.find_by!(slug: params[:site_slug])
+  end
+
+  # Override the default after_unlock_path_for to include site context
+  def after_unlock_path_for(resource)
+    site_admin_path(@site)
+  end
 end

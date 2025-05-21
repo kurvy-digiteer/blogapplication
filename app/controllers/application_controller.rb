@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   require "pagy/extras/bootstrap" # For Bootstrap navs
 
   include Pagy::Backend
-
+  before_action :set_site
   before_action :set_query
   helper_method :current_liker
 
@@ -23,6 +23,11 @@ class ApplicationController < ActionController::Base
     current_user || current_customer
   end
 
+  # this is supposed to be for images but I have to remove the body content limit so no
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+
+  def set_site
+    @site = Site.find_by!(slug: params[:site_slug])
+  end
 end

@@ -3,7 +3,10 @@ class LikesController < ApplicationController
   before_action :set_post
 
   def create
-    @like = @post.likes.build(liker: current_liker)
+    @like = @post.likes.build
+    @like.site = @site
+    @like.liker = current_user if user_signed_in?
+    @like.liker = current_customer if customer_signed_in?
 
     if @like.save
       respond_to do |format|
@@ -37,6 +40,6 @@ class LikesController < ApplicationController
   private
 
   def set_post
-    @post = Post.find(params[:post_id])
+    @post = @site.posts.find_by!(permalink: params[:post_id])
   end
 end

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Users::ConfirmationsController < Devise::ConfirmationsController
+  before_action :set_site, only: [ :show, :create ]
+
   # GET /resource/confirmation/new
   # def new
   #   super
@@ -23,8 +25,14 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   #   super(resource_name)
   # end
 
-  # The path used after confirmation.
-  # def after_confirmation_path_for(resource_name, resource)
-  #   super(resource_name, resource)
-  # end
+  private
+
+  def set_site
+    @site = Site.find_by!(slug: params[:site_slug])
+  end
+
+  # Override the default after_confirmation_path_for to include site context
+  def after_confirmation_path_for(resource_name, resource)
+    site_admin_path(@site)
+  end
 end

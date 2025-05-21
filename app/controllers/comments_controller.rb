@@ -1,14 +1,13 @@
 class CommentsController < ApplicationController
     before_action :authenticate_user_or_customer!
     before_action :set_post
+    before_action :set_comment, only: [ :edit, :update, :destroy ]
 
     def create
-        @comment = @post.comments.create(comment_params)
-        if user_signed_in?
-            @comment.user = current_user
-        else
-            @comment.customer = current_customer
-        end
+        @comment = @post.comments.build(comment_params)
+        @comment.site = @site
+        @comment.user = current_user if user_signed_in?
+        @comment.customer = current_customer if customer_signed_in?
 
         respond_to do |format|
             if @comment.save
@@ -102,9 +101,9 @@ class CommentsController < ApplicationController
 
     def set_post
         if params[:post_id]
-            @post = Post.find_by!(permalink: params[:post_id])
+            @post = @site.posts.find_by!(permalink: params[:post_id])
         elsif params[:featured_id]
-            @post = Post.find_by!(permalink: params[:featured_id])
+            @post = @site.posts.find_by!(permalink: params[:featured_id])
         end
     end
 
@@ -114,5 +113,9 @@ class CommentsController < ApplicationController
 
     def comment_params
         params.require(:comment).permit(:body)
+    end
+
+    def set_comment
+        @comment = @site.comments.find(params[:id])
     end
 end

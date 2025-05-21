@@ -3,15 +3,11 @@ Rails.application.routes.draw do
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
   # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
   # get "featured", to: "featured#index", as: :featured_index
-  resources :featured do
-    resources :comments
-    resources :likes, only: [ :create, :destroy ]
-  end
-    # authenticated :user, ->(user) { user.admin? } do
-    # Admin authentication routes WIP
-
-
-    # Admin dashboard routes
+  scope "/:site_slug" do
+    resources :featured do
+      resources :comments
+      resources :likes, only: [ :create, :destroy ]
+    end
 
     namespace :admin do
       # This sets the root path for the admin section
@@ -40,6 +36,20 @@ Rails.application.routes.draw do
       resources :comments, only: [ :index, :edit, :update, :destroy ]
     end
 
+    get "search", to: "search#index"
+    get "users/profile"
+    get "customers/profile"
+
+    # uses permalinks for user and customer profiles
+    get "u/:name", to: "users#profile", as: "user"
+    get "c/:name", to: "customers#profile", as: "customer"
+
+    # /posts/1/comments/4
+    resources :posts do
+      resources :comments
+      resources :likes, only: [ :create, :destroy ]
+    end
+  end
 
   # FOLLOW THIS FORMAT IF YOU WANT TO ADD MORE ROUTES TO THE ADMIN SECTION WITH
   # SPECIFIC ACTIONS FOR A RESOURCE, LIKE THE USERS RESOURCE ABOVE, if you want to
@@ -66,12 +76,8 @@ Rails.application.routes.draw do
   # end
   # end
 
-  get "search", to: "search#index"
-  get "users/profile"
-  get "customers/profile"
-
   # Custom Devise routes for user login, signup, edit, and delete specifically
-  devise_for :users, path: "admin", path_names: {
+  devise_for :users, path: ":site_slug/admin", path_names: {
     sign_in: "login",
     sign_out: "logout",
     sign_up: "register",
@@ -81,7 +87,7 @@ Rails.application.routes.draw do
     registrations: "users/registrations"
   }
 
-  devise_for :customers, path: "", path_names: {
+  devise_for :customers, path: ":site_slug", path_names: {
     sign_in: "login",
     sign_out: "logout",
     sign_up: "register",
@@ -90,18 +96,6 @@ Rails.application.routes.draw do
     sessions: "customers/sessions",
     registrations: "customers/registrations"
   }
-
-  # uses permalinks for user and customer profiles
-  get "u/:name", to: "users#profile", as: "user"
-  get "c/:name", to: "customers#profile", as: "customer"
-
-  # /posts/1/comments/4
-  resources :posts do
-    resources :comments
-    resources :likes, only: [ :create, :destroy ]
-  end
-
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

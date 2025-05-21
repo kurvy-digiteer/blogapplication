@@ -6,7 +6,7 @@ class AdminController < ApplicationController
   end
 
   def posts
-    @posts = Post.all.includes(:user, :comments)
+    @posts = @site.posts.includes(:user, :comments)
   end
 
   def comments
@@ -16,11 +16,11 @@ class AdminController < ApplicationController
   end
 
   def show_post
-    @post = Post.includes(:user, :comments).find(params[:id])
+    @post = @site.posts.includes(:user, :comments).find(params[:id])
   end
 
   def destroy_post
-    @post = Post.find(params[:id])
+    @post = @site.posts.find(params[:id])
     @post.destroy
     redirect_to posts_path, notice: "Post was successfully deleted."
   end

@@ -6,4 +6,4 @@
   = render "form", post: @post
 
   .mt-4
-    = link_to "Back to Posts", posts_path, class: "btn btn-secondary" 
+    = link_to "Back to Posts", posts_path(site_slug: @site.slug), class: "btn btn-secondary" 

@@ -27,4 +27,17 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # def after_omniauth_failure_path_for(scope)
   #   super(scope)
   # end
+
+  before_action :set_site, only: [ :all ]
+
+  private
+
+  def set_site
+    @site = Site.find_by!(slug: params[:site_slug])
+  end
+
+  # Override the default after_sign_in_path_for to include site context
+  def after_sign_in_path_for(resource)
+    site_admin_path(@site)
+  end
 end

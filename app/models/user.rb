@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
+  belongs_to :site
 
     # Constants for roles because enum breaks the website for some reason, I have no idea why.
     ROLE_USER = 0

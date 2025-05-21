@@ -2,6 +2,7 @@ class CustomersController < ApplicationController
   before_action :set_customer
 
   def profile
+    @customer = @site.customers.find_by!(name: params[:name])
     @customer.update(views: @customer.views + 1)
   end
 

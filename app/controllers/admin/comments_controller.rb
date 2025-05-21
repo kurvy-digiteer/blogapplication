@@ -13,7 +13,7 @@ class Admin::CommentsController < Admin::AdminController
     sort_column = sortable_columns[sort_param] || "comments.id"
     sort_direction = params[:direction] == "asc" ? "asc" : "desc"
 
-    comments = Comment
+    comments = @site.comments
       .left_joins(:post)
       .left_joins(:user)
       .left_joins(:customer)
@@ -45,7 +45,7 @@ class Admin::CommentsController < Admin::AdminController
   private
 
   def set_comment
-    @comment = Comment.find(params[:id])
+    @comment = @site.comments.find(params[:id])
   end
 
   def comment_params
