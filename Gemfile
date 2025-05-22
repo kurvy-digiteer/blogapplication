@@ -70,3 +70,4 @@ end
 gem 'devise'
 gem "ransack", "~> 4.3"
 gem 'slim-rails'
+gem 'truncate_html' # For safe HTML truncation in post bodies

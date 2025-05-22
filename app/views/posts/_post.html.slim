@@ -16,17 +16,18 @@
   h6 = pluralize(post.likes_count, "like")
   h6 = pluralize(post.views, "view")
 
+  - trunc_length = 100
+  - is_truncated = post.body.present? && post.body.length > trunc_length
   .post-body
-    - trunc_length = 100
-    - plain_body = strip_tags(post.body.to_s)
-    - is_truncated = plain_body.length > trunc_length
-    span.post-body-short
-      = truncate(plain_body, length: trunc_length)
-      - if is_truncated
-        a.read-more-link href="#" onclick="showFullPostBody(this); return false;" Read more
-    span.post-body-full style="display: none;"
-      = plain_body
-      a.read-less-link href="#" onclick="hideFullPostBody(this); return false;" Show less
+    -# span.post-body-short style=(is_truncated ? "" : "display: none;")
+    -#   = truncate_html(post.body, length: trunc_length).html_safe
+    -#   - if is_truncated
+    -#     a.read-more-link href="#" onclick="showFullPostBody(this); return false;" Read more
+    -# span.post-body-full style=(is_truncated ? "display: none;" : "")
+    -#   = post.body&.html_safe
+    -#   - if is_truncated
+    -#     a.read-less-link href="#" onclick="hideFullPostBody(this); return false;" Show less
+    = post.body&.html_safe
 
 javascript:
   function showFullPostBody(link) {

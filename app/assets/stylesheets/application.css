@@ -18,3 +18,53 @@
   display: flex;
   align-items: center;
 }
+
+/* QuillJS Editor Styles */
+.quill-editor {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.ql-toolbar {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background: #f8f9fa;
+  border-bottom: 1px solid #ccc;
+}
+
+.ql-container {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  min-height: 200px;
+}
+
+.ql-editor {
+  min-height: 200px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ql-editor p {
+  margin-bottom: 1em;
+}
+
+/* Dark theme adjustments for admin interface */
+.table-dark .quill-editor {
+  background: #343a40;
+  border-color: #495057;
+}
+
+.table-dark .ql-toolbar {
+  background: #212529;
+  border-color: #495057;
+}
+
+.table-dark .ql-container {
+  border-color: #495057;
+}
+
+.table-dark .ql-editor {
+  color: #fff;
+}

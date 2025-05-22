@@ -2,10 +2,9 @@ class Comment < ApplicationRecord
   belongs_to :post
   belongs_to :user, optional: true
   belongs_to :customer, optional: true
-  has_rich_text :body
   has_one_attached :image
 
-  validates :body, presence: true
+  validates :body, presence: true, allow_blank: false
 
   validate :user_or_customer_present
 
@@ -49,6 +48,9 @@ class Comment < ApplicationRecord
   def sanitize_body
     return unless body.present?
     # Sanitize HTML content from QuillJS
-    self.body = ActionController::Base.helpers.sanitize(body, tags: %w[p br strong em u s blockquote pre code h1 h2 h3 h4 h5 h6 ul ol li a img], attributes: %w[href src alt style])
+    self.body = ActionController::Base.helpers.sanitize(body,
+      tags: %w[p br strong em u s blockquote pre code h1 h2 h3 h4 h5 h6 ul ol li a img],
+      attributes: %w[href src alt style]
+    )
   end
 end

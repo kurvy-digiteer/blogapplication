@@ -37,6 +37,12 @@ class LikesController < ApplicationController
   private
 
   def set_post
-    @post = Post.find(params[:post_id])
+    @post = Post.find_by(id: params[:post_id]) || Post.find_by(permalink: params[:post_id])
+    unless @post
+      respond_to do |format|
+        format.html { redirect_to root_path, alert: "Post not found." }
+        format.json { render json: { error: "Post not found." }, status: :not_found }
+      end
+    end
   end
 end
