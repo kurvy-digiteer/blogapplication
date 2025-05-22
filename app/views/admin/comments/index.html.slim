@@ -5,11 +5,11 @@
   table.table.table-dark.table-striped
     thead
       tr
-        th scope="col" = sortable_column("id", "Comment ID")
-        th scope="col" = sortable_column("title", "Post")
-        th scope="col" = sortable_column("name", "Username")
-        th scope="col" = sortable_column("body", "Comment")
-        th scope="col" = sortable_column("created_at", "Created")
+        th scope="col" = sort_link(@q, :id, "Comment ID")
+        th scope="col" = sort_link(@q, :post_title, "Post")
+        th scope="col" = sort_link(@q, :author_name, "Username")
+        th scope="col" Comment
+        th scope="col" = sort_link(@q, :created_at, "Created")
         th scope="col" Actions
     tbody
       - @comments.each do |comment|

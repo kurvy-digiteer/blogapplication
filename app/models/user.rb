@@ -6,6 +6,7 @@ class User < ApplicationRecord
 
   has_many :posts, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :likes, as: :liker, dependent: :destroy
 
     # Constants for roles because enum breaks the website for some reason, I have no idea why.
     ROLE_USER = 0
@@ -30,12 +31,12 @@ class User < ApplicationRecord
 
   # Ransackable attributes for search, allows what can be explicitly searched for
   def self.ransackable_attributes(auth_object = nil)
-    [ "created_at", "email", "id", "name", "remember_created_at", "updated_at", "views" ]
+    %w[id name email role created_at updated_at]
   end
 
   # Ransackable associations for search, allows what can be explicitly searched for, taken from the
   # ransackable gems documentation
   def self.ransackable_associations(auth_object = nil)
-    [ "posts", "comments" ]
+    %w[posts comments]
   end
 end

@@ -1,4 +1,6 @@
 class SearchController < ApplicationController
+  include Pagy::Backend
+
   def index
     search_term = params[:q_all]
 
@@ -8,14 +10,16 @@ class SearchController < ApplicationController
     )
     ransack_results = @query.result(distinct: true)
 
-    # Custom scope for ActionText body again older version of ransack i followed in tutorial
-    body_results = Post.with_body_text(search_term) if search_term.present?
-
-    # Combine results (union), remove duplicates
+    # Custom scope for ActionText body
     if search_term.present?
-      @posts = (ransack_results.to_a + body_results.to_a).uniq
+      # Combine both queries using UNION, no pagy array here since this is an Active Record query
+      @posts = Post.from("(#{ransack_results.to_sql} UNION #{Post.with_body_text(search_term).to_sql}) AS posts")
+                  .includes(:user, :customer)
+                  .distinct
     else
       @posts = Post.all.includes(:user, :customer)
     end
+
+    @pagy, @posts = pagy(@posts, items: 10)
   end
 end

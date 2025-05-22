@@ -15,6 +15,8 @@ class Post < ApplicationRecord
     # For ransack search
     has_one :content, class_name: "ActionText::RichText", as: :record, dependent: :destroy
 
+    before_save :sanitize_body
+
     def liked_by?(liker)
         likes.exists?(liker: liker)
     end
@@ -30,7 +32,7 @@ class Post < ApplicationRecord
   }
 
     def self.ransackable_attributes(auth_object = nil)
-        [ "title", "body", "created_at", "updated_at", "user_id", "customer_id", "views", "likes_count" ]
+        [ "id", "title", "body", "created_at", "updated_at", "user_id", "customer_id", "views", "likes_count", "feature", "active", "permalink" ]
     end
 
     def self.ransackable_associations(auth_object = nil)
@@ -49,5 +51,11 @@ class Post < ApplicationRecord
       elsif user_id.blank? && customer_id.blank?
         errors.add(:base, "Post must belong to either a user or a customer")
       end
+    end
+
+    def sanitize_body
+      return unless body.present?
+      # Sanitize HTML content from QuillJS
+      self.body = ActionController::Base.helpers.sanitize(body, tags: %w[p br strong em u s blockquote pre code h1 h2 h3 h4 h5 h6 ul ol li a img], attributes: %w[href src alt style])
     end
 end

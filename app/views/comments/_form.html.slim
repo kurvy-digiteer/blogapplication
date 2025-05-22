@@ -1,4 +1,6 @@
 = form_with(model: [post, comment]) do |f|
   .mb-3
-    = f.rich_text_area :body, class: "form-control", data: { comment_form_target: "body" }
+    = f.hidden_field :body, class: "quill-input", data: { quill_target: "input", comment_form_target: "body" }
+    div.quill-editor data-quill-target="editor" style="height: 200px;"
+      = comment.body.to_s.html_safe
   = f.submit submit_label, class: "btn btn-primary" 

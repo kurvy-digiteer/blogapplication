@@ -5,12 +5,12 @@
   table.table.table-dark.table-striped
     thead
       tr
-        th scope="col" = sortable_column("id", "ID")
-        th scope="col" = sortable_column("name", "Name")
-        th scope="col" = sortable_column("email", "Email")
-        th scope="col" = sortable_column("posts_count", "Posts")
-        th scope="col" = sortable_column("comments_count", "Comments")
-        th scope="col" = sortable_column("created_at", "Date Created")
+        th scope="col" = sort_link(@q, :id, "ID")
+        th scope="col" = sort_link(@q, :name, "Name")
+        th scope="col" = sort_link(@q, :email, "Email")
+        th scope="col" Posts
+        th scope="col" Comments
+        th scope="col" = sort_link(@q, :created_at, "Date Created")
         th scope="col" Actions
     tbody
       - @customers.each do |customer|

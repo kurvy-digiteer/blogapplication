@@ -15,7 +15,8 @@ Rails.application.routes.draw do
 
     namespace :admin do
       # This sets the root path for the admin section
-      # When someone visits /admin, they'll see the admin dashboard
+      # When someone vi
+      # s /admin, they'll see the admin dashboard
       root to: "admin#index"
 
       # Use proper RESTful routing for posts
@@ -92,8 +93,9 @@ Rails.application.routes.draw do
   }
 
   # uses permalinks for user and customer profiles
-  get "u/:name", to: "users#profile", as: "user"
-  get "c/:name", to: "customers#profile", as: "customer"
+  # regex to allow only letters, numbers, and underscores
+  get "u/:name", to: "users#profile", as: "user", constraints: { name: /[^\/]+/ }
+  get "c/:name", to: "customers#profile", as: "customer", constraints: { name: /[^\/]+/ }
 
   # /posts/1/comments/4
   resources :posts do
