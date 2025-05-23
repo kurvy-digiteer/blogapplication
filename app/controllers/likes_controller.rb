@@ -6,10 +6,9 @@ class LikesController < ApplicationController
     @like = @post.likes.build(liker: current_liker)
 
     if @like.save
-      flash[:notice] = "Post liked successfully."
       respond_to do |format|
         format.html { redirect_to @post }
-        format.json { render json: { likes_count: @post.likes_count, liked: true, notice: flash[:notice] } }
+        format.json { render json: { likes_count: @post.likes_count, liked: true, notice: "Post liked successfully." } }
       end
     else
       flash[:alert] = "You have already liked this post."
@@ -24,10 +23,9 @@ class LikesController < ApplicationController
     @like = @post.likes.find_by(liker: current_liker)
 
     if @like&.destroy
-      flash[:notice] = "Post unliked successfully."
       respond_to do |format|
         format.html { redirect_to @post }
-        format.json { render json: { likes_count: @post.likes_count, liked: false, notice: flash[:notice] } }
+        format.json { render json: { likes_count: @post.likes_count, liked: false, notice: "Post unliked successfully." } }
       end
     else
       flash[:alert] = "Unable to unlike the post."
