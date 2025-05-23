@@ -34,6 +34,17 @@ class PostsController < ApplicationController
   def show
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
+
+    # This is useful if you only want to update a specific part of the page with turbo_frame_tag
+    # and not the entire page, like in this case we only want to update the post body
+    # without this, the entire page would be updated, and we would lose the post body.
+    # This is useful for toggling using turbo without using javascript or other libraries.
+    # But using javascript is probably better for this use case to keep things simple.
+    if turbo_frame_request?
+      render html: view_context.turbo_frame_tag("post_#{@post.id}_body") {
+        view_context.render(partial: "posts/post_body", locals: { post: @post, expanded: params[:read_more].present? })
+      }.html_safe
+    end
   end
 
   # GET /posts/new

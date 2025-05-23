@@ -38,6 +38,12 @@ class FeaturedController < ApplicationController
     @post = Post.where(feature: true, active: true).find_by!(permalink: params[:id])
     @post.update(views: @post.views + 1)
     @comments = @post.comments.order(created_at: :desc)
+
+    if turbo_frame_request?
+      render html: view_context.turbo_frame_tag("featured_post_#{@post.id}_body") {
+        view_context.render(partial: "featured/post_body", locals: { post: @post, expanded: params[:read_more].present? })
+      }.html_safe
+    end
   rescue ActiveRecord::RecordNotFound
     redirect_to featured_path, alert: "Post not found."
   end

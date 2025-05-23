@@ -2,7 +2,7 @@
   .container
     .post-edit-container data-controller="post-edit"
       .post-display data-post-edit-target="display"
-        = render "featured/post", post: @post
+        = render "featured/post_specific_form", post: @post
         .post-actions.mb-4
           = render "likes/like_button", post: @post
           - if user_signed_in? && (@post.user_id == current_user.id)
