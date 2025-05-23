@@ -15,8 +15,7 @@ class LikesController < ApplicationController
                 post: @post,
                 comments: @post.comments.order(created_at: :desc)
               }),
-            turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Post was liked successfully." }),
-            turbo_stream.append("notice", html: "<script>setTimeout(() => { document.getElementById('notice').remove(); }, 3000);</script>")
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Post was liked successfully." })
           ]
         end
         format.json { render json: { likes_count: @post.likes_count, liked: true, notice: "Post was liked successfully." } }
@@ -41,8 +40,7 @@ class LikesController < ApplicationController
                 post: @post,
                 comments: @post.comments.order(created_at: :desc)
               }),
-            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was unliked." }),
-            turbo_stream.append("notice", html: "<script>setTimeout(() => { document.getElementById('notice').remove(); }, 3000);</script>")
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was unliked." })
           ]
         end
         format.json { render json: { likes_count: @post.likes_count, liked: false, notice: "Post unliked successfully." } }

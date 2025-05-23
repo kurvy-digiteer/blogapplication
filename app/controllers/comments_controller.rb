@@ -22,7 +22,9 @@ class CommentsController < ApplicationController
                 format.html { redirect_to parent_post_path(@post), notice: "Your comment has been created" }
             else
                 format.turbo_stream do
-                    render turbo_stream: turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "YOUR COMMENT WAS NOT CREATED" })
+                    render turbo_stream: [
+                        turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @comment.errors.full_messages.join(", ") })
+                    ]
                 end
                 format.html { redirect_to parent_post_path(@post), alert: "YOUR COMMENT WAS NOT CREATED" }
             end
@@ -72,20 +74,24 @@ class CommentsController < ApplicationController
         respond_to do |format|
             if @comment.update(comment_params)
                 format.turbo_stream do
-                    render turbo_stream: turbo_stream.replace(
+                    render turbo_stream: [
+                    turbo_stream.replace(
                         view_context.dom_id(@comment),
                         partial: "comments/comment",
-                        locals: { comment: @comment, post: @post }
-                    )
+                        locals: { comment: @comment, post: @post }),
+                    turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Your comment has been updated" })
+                    ]
                 end
                 format.html { redirect_to parent_post_path(@post), notice: "Comment has been updated!" }
             else
                 format.turbo_stream do
-                    render turbo_stream: turbo_stream.replace(
+                    render turbo_stream: [
+                    turbo_stream.replace(
                         "edit-form-#{@comment.id}",
                         partial: "comments/form",
-                        locals: { comment: @comment, post: @post, submit_label: "Update" }
-                    )
+                        locals: { comment: @comment, post: @post, submit_label: "Update" }),
+                    turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: @comment.errors.full_messages.join(", ") })
+                ]
                 end
                 format.html { redirect_to parent_post_path(@post), alert: "Comment WAS NOT updated!" }
             end
