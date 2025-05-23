@@ -16,14 +16,29 @@ class Admin::PostsController < Admin::AdminController
     end
 
     if params[:all_time].present?
-      # When all_time is present, use regular pagination without any date filtering
+      # Show all posts if all_time is selected
       @pagy, @posts = pagy(posts, items: 10)
       @pagy_calendar = nil
+      @months_with_posts = []
     else
       # Pagy calendar for month navigation
       calendar_params = params.slice(:year, :month, :quarter, :week, :day).to_unsafe_h.symbolize_keys
 
-      # Configure calendar options
+      # Find dynamic year range from filtered posts
+      min_year = posts.minimum(:created_at)&.year || 2022
+      max_year = posts.maximum(:created_at)&.year || 2025
+      posts = posts.between_years(min_year, max_year)
+
+      # Only filter by year/month if those params are present
+      if params[:year].present? || params[:month].present?
+        # pagy_calendar will handle the filtering
+      end
+
+      # Find months with posts
+      @months_with_posts = posts
+        .group(Arel.sql("EXTRACT(YEAR FROM posts.created_at)"), Arel.sql("EXTRACT(MONTH FROM posts.created_at)"))
+        .pluck(Arel.sql("EXTRACT(YEAR FROM posts.created_at)::int"), Arel.sql("EXTRACT(MONTH FROM posts.created_at)::int"))
+
       calendar_options = {
         year: {
           format: "%Y",

@@ -12,7 +12,9 @@
 
   .mb-3
     = form.label :body, class: "form-label"
-    = form.text_area :body, class: "form-control", rows: 10
+    .quill-editor data-controller="quill"
+      = form.hidden_field :body, data: { quill_target: "input" }
+      div data-quill-target="editor" style="height: 300px;"
 
   .mb-3
     = form.submit class: "btn btn-primary" 

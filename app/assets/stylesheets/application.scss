@@ -3,3 +3,11 @@
 
 // Import your other stylesheets
 @import "components/like_button"; 
+@import "quill.snow";
+
+// Custom style for active calendar nav button
+.btn.active, .btn:active {
+    background-color: #198754 !important; /* Bootstrap green */
+    color: #fff !important;
+    border-color: #198754 !important;
+  } 

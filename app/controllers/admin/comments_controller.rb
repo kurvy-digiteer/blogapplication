@@ -3,7 +3,6 @@ class Admin::CommentsController < Admin::AdminController
 
   def index
     @q = Comment.includes(:post, :user, :customer)
-                .joins("LEFT JOIN action_text_rich_texts ON action_text_rich_texts.record_type = 'Comment' AND action_text_rich_texts.record_id = comments.id AND action_text_rich_texts.name = 'body'")
                 .joins("LEFT JOIN posts ON posts.id = comments.post_id")
                 .joins("LEFT JOIN users ON users.id = comments.user_id")
                 .joins("LEFT JOIN customers ON customers.id = comments.customer_id")

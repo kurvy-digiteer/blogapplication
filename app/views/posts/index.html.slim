@@ -31,11 +31,14 @@
         = render "featured/post", post: post
       - else
         = render "posts/post", post: post
-      p
+      
+      
       - if post.feature
         = link_to "Show this post", featured_path(post.permalink), class: "btn btn-info btn-sm"
       - else
         = link_to "Show this post", post_path(post.permalink), class: "btn btn-info btn-sm"
+        
+      p
   br
   == pagy_info(@pagy)
   - if @pagy.pages > 1

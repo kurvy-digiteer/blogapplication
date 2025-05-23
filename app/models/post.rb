@@ -25,6 +25,10 @@ class Post < ApplicationRecord
     where("body ILIKE ?", "%#{query}%")
   }
 
+  scope :between_years, ->(start_year, end_year) {
+    where(created_at: Date.new(start_year, 1, 1)..Date.new(end_year, 12, 31))
+  }
+
   def self.ransackable_attributes(auth_object = nil)
     [ "id", "title", "body", "created_at", "updated_at", "user_id", "customer_id", "views", "likes_count", "feature", "active", "permalink" ]
   end

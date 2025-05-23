@@ -3,7 +3,7 @@
 .container
   h1.mb-4 New featured post
 
-  = render "featured/form", post: @post
+  = render "featured/new_form", post: @post
 
   .mt-4
     = link_to "Back to Featured Posts", featured_index_path, class: "btn btn-secondary"

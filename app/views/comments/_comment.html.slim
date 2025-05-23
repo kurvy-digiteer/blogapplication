@@ -22,7 +22,7 @@
 
         hr.my-2
         div class="comment-body"
-          = comment.body
+          = comment.body&.html_safe
 
         - if comment.image.attached?
           .mt-2

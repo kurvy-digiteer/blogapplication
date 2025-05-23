@@ -9,7 +9,17 @@
  * Consider organizing styles into separate files for maintainability.
  */
 
+ /*
+ *= require quill.snow
+ */
+
 /* OCD just fixing the all time button to be aligned properly */
+.btn.active, .btn:active {
+  background-color: #198754 !important; /* Bootstrap green */
+  color: #fff !important;
+  border-color: #198754 !important;
+} 
+
 .pagy-bootstrap-nav .pagination {
   margin-bottom: 0 !important;
 }

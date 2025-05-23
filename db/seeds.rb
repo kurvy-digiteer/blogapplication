@@ -14,6 +14,10 @@
 #    password_confirmation: "password",
 #    role: "admin")
 
+Like.delete_all
+Comment.delete_all
+Post.delete_all
+
 # Create admin users
 User.create(email: "kurvy@example.com",
     name: "Kurvy Morales",

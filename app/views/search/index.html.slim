@@ -14,11 +14,11 @@ h1.text-center= pluralize(@posts.count, "Result")
         - @posts.each do |post|
           tr
             td= link_to post.title, post
-            td= post.body.to_plain_text.truncate_words(25)
+            td= post.body&.html_safe.truncate_words(25)
             - if post.user.present?
-              td= link_to post.user.name, post.user
+              td= link_to post.user.name, user_path(post.user.name) 
             - else
-              td= link_to post.customer.name, post.customer
+              td= link_to post.customer.name, customer_path(post.customer.name)
 
     .d-flex.justify-content-center.mt-4
       == pagy_info(@pagy)

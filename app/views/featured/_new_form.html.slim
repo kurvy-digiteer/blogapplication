@@ -1,4 +1,4 @@
-= form_with(model: post, data: { controller: "post-edit", turbo: false }) do |form|
+= form_with(model: post, url: featured_index_path, data: { controller: "quill" }) do |form|
   - if post.errors.any?
     .alert.alert-danger
       h2 = pluralize(post.errors.count, "error") + " prohibited this post from being saved:"
@@ -17,6 +17,4 @@
       div data-quill-target="editor" style="height: 300px;"
 
   .mb-3
-    = form.submit "Update Post", class: "btn btn-primary"
-   
-
+    = form.submit class: "btn btn-primary" 
