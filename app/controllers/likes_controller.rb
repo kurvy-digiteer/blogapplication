@@ -6,14 +6,16 @@ class LikesController < ApplicationController
     @like = @post.likes.build(liker: current_liker)
 
     if @like.save
+      flash[:notice] = "Post liked successfully."
       respond_to do |format|
-        format.html { redirect_to @post, notice: "Post liked successfully." }
-        format.json { render json: { likes_count: @post.likes_count, liked: true } }
+        format.html { redirect_to @post }
+        format.json { render json: { likes_count: @post.likes_count, liked: true, notice: flash[:notice] } }
       end
     else
+      flash[:alert] = "You have already liked this post."
       respond_to do |format|
-        format.html { redirect_to @post, alert: "You have already liked this post." }
-        format.json { render json: { error: "You have already liked this post." }, status: :unprocessable_entity }
+        format.html { redirect_to @post }
+        format.json { render json: { error: flash[:alert] }, status: :unprocessable_entity }
       end
     end
   end
@@ -22,14 +24,16 @@ class LikesController < ApplicationController
     @like = @post.likes.find_by(liker: current_liker)
 
     if @like&.destroy
+      flash[:notice] = "Post unliked successfully."
       respond_to do |format|
-        format.html { redirect_to @post, notice: "Post unliked successfully." }
-        format.json { render json: { likes_count: @post.likes_count, liked: false } }
+        format.html { redirect_to @post }
+        format.json { render json: { likes_count: @post.likes_count, liked: false, notice: flash[:notice] } }
       end
     else
+      flash[:alert] = "Unable to unlike the post."
       respond_to do |format|
-        format.html { redirect_to @post, alert: "Unable to unlike the post." }
-        format.json { render json: { error: "Unable to unlike the post." }, status: :unprocessable_entity }
+        format.html { redirect_to @post }
+        format.json { render json: { error: flash[:alert] }, status: :unprocessable_entity }
       end
     end
   end
@@ -39,9 +43,10 @@ class LikesController < ApplicationController
   def set_post
     @post = Post.find_by(id: params[:post_id]) || Post.find_by(permalink: params[:post_id])
     unless @post
+      flash[:alert] = "Post not found."
       respond_to do |format|
-        format.html { redirect_to root_path, alert: "Post not found." }
-        format.json { render json: { error: "Post not found." }, status: :not_found }
+        format.html { redirect_to root_path }
+        format.json { render json: { error: flash[:alert] }, status: :not_found }
       end
     end
   end

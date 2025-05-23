@@ -7,6 +7,7 @@ export default class extends Controller {
     event.preventDefault()
     const button = this.buttonTarget
     const postId = button.dataset.postId
+    const postPermalink = button.dataset.postPermalink
     const isLiked = button.classList.contains("liked")
     const url = isLiked ? `/posts/${postId}/likes/${button.dataset.likeId}` : `/posts/${postId}/likes`
     const method = isLiked ? "DELETE" : "POST"
@@ -18,24 +19,20 @@ export default class extends Controller {
         "Accept": "application/json"
       }
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok')
+      }
+      return response.json()
+    })
     .then(data => {
       if (data.error) {
         console.error(data.error)
         return
       }
-
       this.countTarget.textContent = data.likes_count
-      
-      if (data.liked) {
-        button.classList.add("liked")
-        button.querySelector("i").classList.remove("far")
-        button.querySelector("i").classList.add("fas")
-      } else {
-        button.classList.remove("liked")
-        button.querySelector("i").classList.remove("fas")
-        button.querySelector("i").classList.add("far")
-      }
+      // Redirect to the post page using permalink
+      window.location.href = `/posts/${postPermalink}`
     })
     .catch(error => {
       console.error("Error:", error)

@@ -2,11 +2,11 @@
 .like-button data-controller="like"
   - if user_signed_in? || customer_signed_in?
     - if post.liked_by?(current_liker)
-      = button_to post_like_path(post, post.likes.find_by(liker: current_liker)), method: :delete, class: "like-button__button liked", data: { action: "like#toggle", like_target: "button", post_id: post.id } do
+      = button_to post_like_path(post, post.likes.find_by(liker: current_liker)), method: :delete, class: "like-button__button liked", data: { action: "like#toggle", like_target: "button", post_id: post.id, post_permalink: post.permalink, like_id: post.likes.find_by(liker: current_liker).id } do
         i.fas.fa-heart
         span.like-count data-like-target="count" = post.likes_count
     - else
-      = button_to post_likes_path(post), class: "like-button__button", data: { action: "like#toggle", like_target: "button", post_id: post.id } do
+      = button_to post_likes_path(post), class: "like-button__button", data: { action: "like#toggle", like_target: "button", post_id: post.id, post_permalink: post.permalink } do
         i.far.fa-heart
         span.like-count data-like-target="count" = post.likes_count
   - else
