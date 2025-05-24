@@ -1,0 +1,13 @@
+- trunc_length = 100
+- plain_body = strip_tags(post.body.to_s)
+- is_truncated = plain_body.length > trunc_length
+
+- if expanded
+  .post-body
+    = post.body&.html_safe
+    = link_to "Show less", featured_path(post, show_less: true), data: { turbo_frame: "featured_post_#{post.id}_body" }, class: "btn btn-link"
+- else
+  .post-body
+    = truncate(plain_body, length: trunc_length)
+    - if is_truncated
+      = link_to "Read more", featured_path(post, read_more: true), data: { turbo_frame: "featured_post_#{post.id}_body" }, class: "btn btn-link" 

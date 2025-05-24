@@ -1,39 +1,35 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-    initialize() { }
-    connect() { }
-    toggleForm(event) {
-        console.log("I clicked the edit button.");
-        event.preventDefault();
-        event.stopPropagation();
+    static targets = ["display", "form"]
 
-        const formID = event.params["form"];
-        const commentBodyID = event.params["body"];
-        const editButtonID = event.params["edit"];
-
-        const form = document.getElementById(formID);
-        const commentBody = document.getElementById(commentBodyID);
-        const editButton = document.getElementById(editButtonID);
-        this.toggleEditButton(editButton);
-
-        form.classList.toggle("d-none");
-        form.classList.toggle("mt-5");
-        commentBody.classList.toggle("d-none");
+    connect() {
+        console.log("comments_ controller connected!");
+        if (this.hasDisplayTarget && this.hasFormTarget) {
+            this.displayTarget.classList.remove("d-none")
+            this.formTarget.classList.add("d-none")
+        }
+        this.element.addEventListener("turbo:frame-render", this.afterTurboUpdate.bind(this))
     }
 
-    toggleEditButton(editButton) {
-        if (editButton.innerText === "Edit") {
-            editButton.innerText = "Cancel";
-            this.toggleEditButtonClass(editButton);
-        } else {
-            editButton.innerText = "Edit";
-            this.toggleEditButtonClass(editButton);
+    showForm() {
+        if (this.hasDisplayTarget && this.hasFormTarget) {
+            this.displayTarget.classList.add("d-none")
+            this.formTarget.classList.remove("d-none")
         }
     }
 
-    toggleEditButtonClass(editButton) {
-        editButton.classList.toggle("btn-secondary");
-        editButton.classList.toggle("btn-warning");
+    hideForm() {
+        if (this.hasDisplayTarget && this.hasFormTarget) {
+            this.displayTarget.classList.remove("d-none")
+            this.formTarget.classList.add("d-none")
+        }
+    }
+
+    afterTurboUpdate(event) {
+        if (this.hasDisplayTarget && this.hasFormTarget) {
+            this.displayTarget.classList.remove("d-none")
+            this.formTarget.classList.add("d-none")
+        }
     }
 }

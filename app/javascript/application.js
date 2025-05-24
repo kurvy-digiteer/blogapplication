@@ -8,6 +8,8 @@ import "@rails/actiontext"
 
 import flatpickr from "flatpickr"
 
+// (QuillJS initialization removed; handled by Stimulus controllers)
+
 document.addEventListener('turbo:load', function() {
   const datepickers = document.querySelectorAll('.datepicker');
   if (datepickers.length > 0) {
@@ -18,7 +20,6 @@ document.addEventListener('turbo:load', function() {
       altFormat: "F j, Y",
       static: true,
       onChange: function(selectedDates, dateStr) {
-        // Automatically submit the form when a date is selected, no more filter button
         const form = this.element.closest('form');
         if (form) form.submit();
       }

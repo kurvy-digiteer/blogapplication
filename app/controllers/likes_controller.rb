@@ -4,15 +4,23 @@ class LikesController < ApplicationController
 
   def create
     @like = @post.likes.build(liker: current_liker)
-
-    if @like.save
-      respond_to do |format|
-        format.html { redirect_to @post, notice: "Post liked successfully." }
-        format.json { render json: { likes_count: @post.likes_count, liked: true } }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to @post, alert: "You have already liked this post." }
+    respond_to do |format|
+      if @like&.save
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              view_context.dom_id(@post),
+              partial: @post.feature ? "featured/show" : "posts/show",
+              locals: {
+                post: @post,
+                comments: @post.comments.order(created_at: :desc)
+              }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { notice: "Post was liked successfully." })
+          ]
+        end
+        format.json { render json: { likes_count: @post.likes_count, liked: true, notice: "Post was liked successfully." } }
+      else
+        format.html { redirect_to @post }
         format.json { render json: { error: "You have already liked this post." }, status: :unprocessable_entity }
       end
     end
@@ -21,14 +29,23 @@ class LikesController < ApplicationController
   def destroy
     @like = @post.likes.find_by(liker: current_liker)
 
-    if @like&.destroy
-      respond_to do |format|
-        format.html { redirect_to @post, notice: "Post unliked successfully." }
-        format.json { render json: { likes_count: @post.likes_count, liked: false } }
-      end
-    else
-      respond_to do |format|
-        format.html { redirect_to @post, alert: "Unable to unlike the post." }
+    respond_to do |format|
+      if @like&.destroy
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(
+              view_context.dom_id(@post),
+              partial: @post.feature ? "featured/show" : "posts/show",
+              locals: {
+                post: @post,
+                comments: @post.comments.order(created_at: :desc)
+              }),
+            turbo_stream.update("notice", partial: "layouts/alerts", locals: { alert: "Post was unliked." })
+          ]
+        end
+        format.json { render json: { likes_count: @post.likes_count, liked: false, notice: "Post unliked successfully." } }
+      else
+        format.html { redirect_to @post }
         format.json { render json: { error: "Unable to unlike the post." }, status: :unprocessable_entity }
       end
     end
@@ -37,6 +54,13 @@ class LikesController < ApplicationController
   private
 
   def set_post
-    @post = Post.find(params[:post_id])
+    @post = Post.find_by(id: params[:post_id]) || Post.find_by(permalink: params[:post_id])
+    unless @post
+      flash[:alert] = "Post not found."
+      respond_to do |format|
+        format.html { redirect_to root_path }
+        format.json { render json: { error: flash[:alert] }, status: :not_found }
+      end
+    end
   end
 end

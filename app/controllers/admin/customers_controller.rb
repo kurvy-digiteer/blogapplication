@@ -2,21 +2,11 @@ class Admin::CustomersController < Admin::AdminController
   before_action :set_customer, only: [ :edit, :update, :destroy ]
 
   def index
-    sortable_columns = {
-      "id" => "customers.id",
-      "name" => "customers.name",
-      "email" => "customers.email",
-      "posts_count" => "COUNT(DISTINCT posts.id)",
-      "comments_count" => "COUNT(DISTINCT comments.id)",
-      "created_at" => "customers.created_at"
-    }
-    sort_column = sortable_columns[params[:sort]] || "customers.id"
-    sort_direction = params[:direction] == "asc" ? "asc" : "desc"
-
-    customers = Customer.left_joins(:posts, :comments)
-                      .select("customers.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
-                      .group("customers.id")
-                      .order(Arel.sql("#{sort_column} #{sort_direction}"))
+    @q = Customer.includes(:posts, :comments).ransack(params[:q])
+    customers = @q.result
+                 .left_joins(:posts, :comments)
+                 .select("customers.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
+                 .group("customers.id")
 
     @pagy, @customers = pagy(customers, items: 10)
   end

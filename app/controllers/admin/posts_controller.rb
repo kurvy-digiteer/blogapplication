@@ -4,22 +4,41 @@ class Admin::PostsController < Admin::AdminController
   helper_method :calendar_view?
 
   def index
-    super
-    sortable_columns = %w[id title views likes_count created_at feature active]
-    sort_column = sortable_columns.include?(params[:sort]) ? params[:sort] : "id"
-    sort_direction = params[:direction] == "asc" ? "asc" : "desc"
+    @q = Post.includes(:user, :customer).ransack(params[:q])
+    posts = @q.result
 
-    posts_scope = Post.includes(:user, :customer, :comments).order("#{sort_column} #{sort_direction}")
+    # Apply search if present
+    if params[:q_all].present?
+      # Ransack for title and user/customer fields
+      posts = Post.ransack(
+        title_or_user_email_or_user_name_or_customer_email_or_customer_name_cont_any: params[:q_all]
+      ).result(distinct: true)
+    end
 
     if params[:all_time].present?
-      # When all_time is present, use regular pagination without any date filtering
-      @pagy, @posts = pagy(posts_scope, items: 10)
+      # Show all posts if all_time is selected
+      @pagy, @posts = pagy(posts, items: 10)
       @pagy_calendar = nil
+      @months_with_posts = []
     else
       # Pagy calendar for month navigation
       calendar_params = params.slice(:year, :month, :quarter, :week, :day).to_unsafe_h.symbolize_keys
 
-      # Configure calendar options
+      # Find dynamic year range from filtered posts
+      min_year = posts.minimum(:created_at)&.year || 2022
+      max_year = posts.maximum(:created_at)&.year || 2025
+      posts = posts.between_years(min_year, max_year)
+
+      # Only filter by year/month if those params are present
+      if params[:year].present? || params[:month].present?
+        # pagy_calendar will handle the filtering
+      end
+
+      # Find months with posts
+      @months_with_posts = posts
+        .group(Arel.sql("EXTRACT(YEAR FROM posts.created_at)"), Arel.sql("EXTRACT(MONTH FROM posts.created_at)"))
+        .pluck(Arel.sql("EXTRACT(YEAR FROM posts.created_at)::int"), Arel.sql("EXTRACT(MONTH FROM posts.created_at)::int"))
+
       calendar_options = {
         year: {
           format: "%Y",
@@ -36,7 +55,7 @@ class Admin::PostsController < Admin::AdminController
 
       # Use calendar pagination
       @pagy_calendar, @pagy, @posts = pagy_calendar(
-        posts_scope,
+        posts,
         **calendar_options,
         pagy: { items: 10 }
       )
@@ -59,30 +78,23 @@ class Admin::PostsController < Admin::AdminController
 
   # PATCH/PUT /posts/1 or /posts/1.json
   def update
-    respond_to do |format|
-      if @post.update(post_params)
-        format.html { redirect_to admin_post_path(@post), notice: "Post was successfully updated." }
-        format.json { render :show, status: :ok, location: [ :admin, @post ] }
-      else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @post.errors, status: :unprocessable_entity }
-      end
+    if @post.update(post_params)
+      redirect_to admin_post_path(@post), notice: "Post was successfully updated."
+    else
+      render :edit, status: :unprocessable_entity
     end
   end
 
   # DELETE /posts/1 or /posts/1.json
   def destroy
     @post.destroy
-    respond_to do |format|
-      format.html { redirect_to admin_posts_path, notice: "Post was successfully deleted." }
-      format.json { head :no_content }
-    end
+    redirect_to admin_posts_path, notice: "Post was successfully deleted."
   end
 
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_post
-    @post = Post.find(params[:id])
+    @post = Post.find_by!(permalink: params[:id])
   rescue ActiveRecord::RecordNotFound
     respond_to do |format|
       format.html { redirect_to admin_posts_path, alert: "Post not found." }
@@ -98,7 +110,7 @@ class Admin::PostsController < Admin::AdminController
 
   # Only allow a list of trusted parameters through.
   def post_params
-    params.require(:post).permit(:title, :body, :active, :feature)
+    params.require(:post).permit(:title, :body, :feature, :active)
   end
 
   # Required by pagy_calendar

@@ -23,9 +23,9 @@
             .card-body
               h5.card-title
                 - if post.feature
-                  = link_to post.title, featured_path(post)
+                  = link_to post.title, featured_path(post.permalink)
                 - else
-                  = link_to post.title, post_path(post)
+                  = link_to post.title, post_path(post.permalink)
               p.card-text
                 small.text-muted Posted on #{post.created_at.strftime("%B %d, %Y")}
               p.card-text
@@ -40,9 +40,9 @@
                 small.text-muted
                   | On post: 
                   - if comment.post.feature
-                    = link_to comment.post.title, featured_path(comment.post)
+                    = link_to comment.post.title, featured_path(comment.post.permalink)
                   - else
-                    = link_to comment.post.title, post_path(comment.post)
+                    = link_to comment.post.title, post_path(comment.post.permalink)
               p.card-text
                 small.text-muted
                   | Posted on #{comment.created_at.strftime("%B %d, %Y")} 

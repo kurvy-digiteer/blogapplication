@@ -1,4 +1,6 @@
 - if notice
-  p.notice style="color: green" = notice
+  .alert.alert-success.text-center.mx-auto[data-controller="notice" style="max-width: 600px; font-size: 1.1rem;"]
+    = notice
 - elsif alert
-  p.alert style="color: red" = alert 
+  .alert.alert-danger.text-center.mx-auto[data-controller="notice" style="max-width: 600px; font-size: 1.1rem;"]
+    = alert 

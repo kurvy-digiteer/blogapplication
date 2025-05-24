@@ -2,25 +2,19 @@ class Admin::CommentsController < Admin::AdminController
   before_action :set_comment, only: [ :edit, :update, :destroy ]
 
   def index
-    sortable_columns = {
-      "id" => "comments.id",
-      "title" => "posts.title",
-      "name" => "COALESCE(users.name, customers.name)",
-      "body" => "action_text_rich_texts.body",
-      "created_at" => "comments.created_at"
-    }
-    sort_param = params[:sort] || "id"
-    sort_column = sortable_columns[sort_param] || "comments.id"
-    sort_direction = params[:direction] == "asc" ? "asc" : "desc"
+    @q = Comment.includes(:post, :user, :customer)
+                .joins("LEFT JOIN posts ON posts.id = comments.post_id")
+                .joins("LEFT JOIN users ON users.id = comments.user_id")
+                .joins("LEFT JOIN customers ON customers.id = comments.customer_id")
+                .ransack(params[:q])
 
-    comments = Comment
-      .left_joins(:post)
-      .left_joins(:user)
-      .left_joins(:customer)
-      .joins("LEFT JOIN action_text_rich_texts ON action_text_rich_texts.record_type = 'Comment'
-        AND action_text_rich_texts.record_id = comments.id AND action_text_rich_texts.name = 'body'")
-      .select("comments.*, posts.title as post_title, COALESCE(users.name, customers.name) as author_name")
-      .order(Arel.sql("#{sort_column} #{sort_direction}"))
+    comments = @q.result
+                .select("comments.*, posts.title as post_title,
+                        CASE
+                          WHEN users.id IS NOT NULL THEN users.name
+                          WHEN customers.id IS NOT NULL THEN customers.name
+                          ELSE NULL
+                        END as author_name")
 
     @pagy, @comments = pagy(comments, items: 10)
   end

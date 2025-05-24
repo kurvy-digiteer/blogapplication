@@ -3,7 +3,8 @@ class ApplicationController < ActionController::Base
   require "pagy/extras/bootstrap" # For Bootstrap navs
 
   include Pagy::Backend
-
+  include ApplicationHelper
+  helper_method :truncate_html
   before_action :set_query
   helper_method :current_liker
 

@@ -1,0 +1,20 @@
+= form_with(model: post, data: { controller: "quill" }) do |form|
+  - if post.errors.any?
+    .alert.alert-danger
+      h2 = pluralize(post.errors.count, "error") + " prohibited this post from being saved:"
+      ul
+        - post.errors.each do |error|
+          li = error.full_message
+
+  .mb-3
+    = form.label :title, class: "form-label"
+    = form.text_field :title, class: "form-control"
+
+  .mb-3
+    = form.label "New Post Body", class: "form-label"
+    .quill-editor data-controller="quill"
+      = form.hidden_field :body, data: { quill_target: "input" }
+      div data-quill-target="editor" style="height: 300px;"
+
+  .mb-3
+    = form.submit class: "btn btn-primary" 

@@ -1,0 +1,11 @@
+= search_form_for(@q, url: url_for, method: :get, class: "d-flex", data: { turbo_frame: "_top" }) do |f|
+  = text_field_tag :q_all, params[:q_all], 
+    class: "form-control", 
+    placeholder: "Search posts by title, author, or email..."
+  - if params[:all_time]
+    = hidden_field_tag :all_time, params[:all_time]
+  - if params[:year]
+    = hidden_field_tag :year, params[:year]
+  - if params[:month]
+    = hidden_field_tag :month, params[:month]
+  = f.submit "Search", class: "btn btn-outline-primary ms-2" 

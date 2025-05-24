@@ -1,4 +1,4 @@
-= form_with(model: post) do |form|
+= form_with(model: post, data: { controller: "post-edit", turbo: false }) do |form|
   - if post.errors.any?
     .alert.alert-danger
       h2 = pluralize(post.errors.count, "error") + " prohibited this post from being saved:"
@@ -12,7 +12,11 @@
 
   .mb-3
     = form.label :body, class: "form-label"
-    = form.rich_text_area :body, class: "form-control"
+    .quill-editor data-controller="quill"
+      = form.hidden_field :body, data: { quill_target: "input" }
+      div data-quill-target="editor" style="height: 300px;"
 
   .mb-3
-    = form.submit class: "btn btn-primary" 
+    = form.submit "Update Post", class: "btn btn-primary"
+   
+

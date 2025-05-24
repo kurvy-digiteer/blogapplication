@@ -20,7 +20,9 @@
       = form_with(model: [:admin, @comment], local: true) do |f|
         .form-group.mb-3
           = f.label :body, "Comment", class: "form-label"
-          = f.rich_text_area :body, class: "form-control bg-white text-black"
+          = f.hidden_field :body, class: "quill-input", data: { quill_target: "input" }
+          div.quill-editor data-quill-target="editor" style="height: 200px;"
+            = @comment.body.to_s.html_safe
 
         .d-flex.gap-2
           = f.submit "Update Comment", class: "btn btn-primary"

@@ -23,9 +23,11 @@ html
 
     = stylesheet_link_tag :app, "data-turbo-track": "reload"
     = javascript_importmap_tags
+    = stylesheet_link_tag "quill.snow", "data-turbo-track": "reload"
   body
     header
       = render "layouts/navbar"
+      #notice
       = render "layouts/alerts"
     main
       = yield 

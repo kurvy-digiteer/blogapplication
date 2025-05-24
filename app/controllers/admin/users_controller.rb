@@ -2,21 +2,11 @@ class Admin::UsersController < Admin::AdminController
   before_action :set_user, only: [ :edit, :update, :destroy ]
 
   def index
-    sortable_columns = {
-      "id" => "users.id",
-      "name" => "users.name",
-      "email" => "users.email",
-      "posts_count" => "COUNT(DISTINCT posts.id)",
-      "comments_count" => "COUNT(DISTINCT comments.id)",
-      "created_at" => "users.created_at"
-    }
-    sort_column = sortable_columns[params[:sort]] || "users.id"
-    sort_direction = params[:direction] == "asc" ? "asc" : "desc"
-
-    users = User.left_joins(:posts, :comments)
-               .select("users.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
-               .group("users.id")
-               .order(Arel.sql("#{sort_column} #{sort_direction}"))
+    @q = User.includes(:posts, :comments).ransack(params[:q])
+    users = @q.result
+              .left_joins(:posts, :comments)
+              .select("users.*, COUNT(DISTINCT posts.id) as posts_count, COUNT(DISTINCT comments.id) as comments_count")
+              .group("users.id")
 
     @pagy, @users = pagy(users, items: 10)
   end

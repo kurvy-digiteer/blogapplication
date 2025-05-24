@@ -1,28 +1,29 @@
-.container
-  = render @post
-  
-  .post-actions.mb-4
-    = render "likes/like_button", post: @post
-    
-    - if user_signed_in? && (@post.user_id == current_user.id)
-      = link_to "Edit this post", edit_featured_path(@post), class: "btn btn-primary me-2"
-    - elsif customer_signed_in? && @post.customer_id == current_customer.id
-      = link_to "Edit this post", edit_featured_path(@post), class: "btn btn-primary me-2"
-    
-    - if user_signed_in? && (@post.user_id == current_user.id)
-      = button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger me-2"
-    - elsif customer_signed_in? && @post.customer_id == current_customer.id
-      = button_to "Destroy this post", @post, method: :delete, class: "btn btn-danger me-2"
-    
-    = link_to "Back to featured posts", featured_index_path, class: "btn btn-secondary"
+= turbo_frame_tag dom_id(@post) do
+  .container
+    .post-edit-container data-controller="post-edit"
+      .post-display data-post-edit-target="display"
+        = render "featured/post_specific_form", post: @post
+        .post-actions.mb-4
+          = render "likes/like_button", post: @post
+          - if user_signed_in? && (@post.user_id == current_user.id)
+            = button_tag "Edit this post", type: "button", class: "btn btn-primary me-2", data: { action: "post-edit#showForm" }
+            = button_to "Destroy this post", featured_path(@post), method: :delete, data: { turbo: false, confirm: "Are you sure?" }, class: "btn btn-danger me-2"
+          - elsif customer_signed_in? && @post.customer_id == current_customer.id
+            = button_tag "Edit this post", type: "button", class: "btn btn-primary me-2", data: { action: "post-edit#showForm" }
+            = button_to "Destroy this post", featured_path(@post), method: :delete, data: { turbo: false, confirm: "Are you sure?" }, class: "btn btn-danger me-2"
+          = link_to "Back to featured posts", featured_index_path, class: "btn btn-secondary", data: { turbo: false }
 
-.container
-  = render "comments/form", 
-    post: @post, 
-    comment: @post.comments.build,
-    submit_label: "Reply"
-    
-  - @comments.each do |comment|
-    = render "comments/comment", 
-      post: @post, 
-      comment: comment
+      .post-form.d-none data-post-edit-target="form"
+        = render "featured/form", post: @post
+        = button_tag "Cancel", type: "button", class: "btn btn-secondary mt-2", data: { action: "post-edit#hideForm" }
+
+  .container
+    h3 Post a comment
+    = turbo_frame_tag "new_comment" do
+      = render "comments/form", 
+        post: @post, 
+        comment: @post.comments.build,
+        submit_label: "Reply"
+    h3 Comments
+    = turbo_frame_tag "comments" do
+      = render @comments, comments: @comments, post: @post

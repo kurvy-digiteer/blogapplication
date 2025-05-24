@@ -358,6 +358,7 @@ GEM
     thruster (0.1.13-x86_64-linux)
     tilt (2.6.0)
     timeout (0.4.3)
+    truncate_html (0.9.3)
     turbo-rails (2.0.13)
       actionpack (>= 7.1.0)
       railties (>= 7.1.0)
@@ -419,6 +420,7 @@ DEPENDENCIES
   solid_queue
   stimulus-rails
   thruster
+  truncate_html
   turbo-rails
   tzinfo-data
   web-console

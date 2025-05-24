@@ -35,7 +35,9 @@
 
     .field
       = form.label :body, style: "display: block"
-      = form.rich_text_area :body
+      = form.hidden_field :body, class: "quill-input", data: { quill_target: "input" }
+      div.quill-editor data-quill-target="editor" style="height: 300px;"
+        = @post.body.to_s.html_safe
 
     .form-check.mb-3
       = form.check_box :active, class: "form-check-input"

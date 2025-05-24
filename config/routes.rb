@@ -2,10 +2,10 @@ Rails.application.routes.draw do
   # METHOD NAME: get, post, delete, patch, put, etc. "URLNAME", or"folder/file" or "folder#file", or "folder/file#action", or
   # "folder", to: "controller#action" or to: "folder#action", as: :name.
   # This name will be read as (LIST OF SUFFIXES: namespace, edit, create, update, destroy, etc.) suffix_name_path
-  get "featured", to: "featured#index", as: :featured_index
-  # Read as featured_path if you wanna access the index page of the /featured folder
-  resources :featured, only: [ :new, :create, :edit, :update, :show, :destroy ], path: "featured" do
-    resources :comments, only: [ :create, :update, :destroy ], module: nil
+  # get "featured", to: "featured#index", as: :featured_index
+  resources :featured do
+    resources :comments
+    resources :likes, only: [ :create, :destroy ]
   end
     # authenticated :user, ->(user) { user.admin? } do
     # Admin authentication routes WIP
@@ -15,7 +15,8 @@ Rails.application.routes.draw do
 
     namespace :admin do
       # This sets the root path for the admin section
-      # When someone visits /admin, they'll see the admin dashboard
+      # When someone vi
+      # s /admin, they'll see the admin dashboard
       root to: "admin#index"
 
       # Use proper RESTful routing for posts
@@ -91,9 +92,10 @@ Rails.application.routes.draw do
     registrations: "customers/registrations"
   }
 
-
-  get "u/:id", to: "users#profile", as: "user"
-  get "c/:id", to: "customers#profile", as: "customer"
+  # uses permalinks for user and customer profiles
+  # regex to allow only letters, numbers, and underscores
+  get "u/:name", to: "users#profile", as: "user", constraints: { name: /[^\/]+/ }
+  get "c/:name", to: "customers#profile", as: "customer", constraints: { name: /[^\/]+/ }
 
   # /posts/1/comments/4
   resources :posts do

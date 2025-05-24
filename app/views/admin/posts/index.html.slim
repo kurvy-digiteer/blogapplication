@@ -1,33 +1,38 @@
 .container
   h1.text-center Admin Dashboard
   = render "admin/nav_links"
+  br
 
   .row.mb-4
     .col-md-12
-      h5 Filter by date:
-      .d-flex.align-items-center.gap-3
-        .d-flex.align-items-center
-          = link_to "All Time", 
-            admin_posts_path(params.permit(:sort, :direction).merge(all_time: params[:all_time] ? nil : true)), 
-            class: "btn btn-outline-primary #{'active' if params[:all_time]}"
-        - if @pagy_calendar
+      .d-flex.flex-column.gap-3
+        .d-flex.align-items-center.gap-3
+          .text-nowrap style="width: 120px" Filter by date:
           .d-flex.align-items-center
-            == pagy_bootstrap_nav(@pagy_calendar[:year], link_extra: "data-turbo-frame='_top'")
-          .d-flex.align-items-center
-            == pagy_bootstrap_nav(@pagy_calendar[:month], link_extra: "data-turbo-frame='_top'")
+            = link_to "All Time", 
+              admin_posts_path(params.permit(:q, :sort, :direction).merge(all_time: params[:all_time] ? nil : true)), 
+              class: "btn btn-outline-primary #{'active' if params[:all_time]}",
+              style: "min-width: 100px"
+          - if @pagy_calendar
+            .d-flex.align-items-center
+              == pagy_bootstrap_nav(@pagy_calendar[:year], link_extra: "data-turbo-frame='_top'")
+            .d-flex.align-items-center
+              == pagy_bootstrap_nav(@pagy_calendar[:month], link_extra: "data-turbo-frame='_top'")
+        .col-md-4
+          = render "admin/search_form"
 
   table.table.table-dark.table-striped data-calendar-target="postsTable"
     thead
       tr
-        th scope="col" = sortable_column("id", "ID")
-        th scope="col" = sortable_column("title", "Post")
-        th scope="col" = sortable_column("user_name", "Author")
+        th scope="col" = sort_link(@q, :id, "ID")
+        th scope="col" = sort_link(@q, :title, "Post")
+        th scope="col" = sort_link(@q, :user_name, "Author")
         th scope="col" Comments
-        th scope="col" = sortable_column("views", "Views")
-        th scope="col" = sortable_column("likes_count", "Likes")
-        th scope="col" = sortable_column("created_at", "Post date")
-        th scope="col" = sortable_column("feature", "Featured")
-        th scope="col" = sortable_column("active", "Active")
+        th scope="col" = sort_link(@q, :views, "Views")
+        th scope="col" = sort_link(@q, :likes_count, "Likes")
+        th scope="col" = sort_link(@q, :created_at, "Post date")
+        th scope="col" = sort_link(@q, :feature, "Featured")
+        th scope="col" = sort_link(@q, :active, "Active")
         th scope="col" Actions
 
     tbody
@@ -46,8 +51,8 @@
           td = post.feature ? "Yes" : "No"
           td = post.active ? "Yes" : "No"
           td
-            = link_to "View", admin_post_path(post), class: "btn btn-primary btn-sm"
-            = button_to "Delete", admin_post_path(post), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } }
+            = link_to "View", admin_post_path(post.permalink), class: "btn btn-primary btn-sm"
+            = button_to "Delete", admin_post_path(post.permalink), method: :delete, class: "btn btn-danger btn-sm", form: { data: { turbo_confirm: "Are you sure you want to delete this post?" } }
 
   == pagy_info(@pagy)
   == pagy_bootstrap_nav(@pagy) if @pagy.pages > 1 
